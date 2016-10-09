@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FDE38C511DAAF7C400D408F2 /* TSPostingMessagesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE38C501DAAF7C400D408F2 /* TSPostingMessagesManager.m */; };
+		FDE38C591DAAFB8300D408F2 /* NSString+TSString.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE38C581DAAFB8300D408F2 /* NSString+TSString.m */; };
 		FDE94CFE1DA7A7E1006C2207 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE94CFD1DA7A7E1006C2207 /* main.m */; };
 		FDE94D011DA7A7E1006C2207 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE94D001DA7A7E1006C2207 /* AppDelegate.m */; };
 		FDE94D071DA7A7E1006C2207 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDE94D051DA7A7E1006C2207 /* Main.storyboard */; };
@@ -47,6 +49,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FDE38C4F1DAAF7C400D408F2 /* TSPostingMessagesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSPostingMessagesManager.h; sourceTree = "<group>"; };
+		FDE38C501DAAF7C400D408F2 /* TSPostingMessagesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSPostingMessagesManager.m; sourceTree = "<group>"; };
+		FDE38C571DAAFB8300D408F2 /* NSString+TSString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+TSString.h"; sourceTree = "<group>"; };
+		FDE38C581DAAFB8300D408F2 /* NSString+TSString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+TSString.m"; sourceTree = "<group>"; };
 		FDE94CF91DA7A7E1006C2207 /* Mobi-click.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mobi-click.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDE94CFD1DA7A7E1006C2207 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FDE94CFF1DA7A7E1006C2207 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -115,6 +121,71 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FDE38C521DAAF7EB00D408F2 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FDE94D2F1DA7BF02006C2207 /* TSMeinViewController.h */,
+				FDE94D301DA7BF02006C2207 /* TSMeinViewController.m */,
+				FDE94D331DA7C76F006C2207 /* TSSettingsViewController.h */,
+				FDE94D341DA7C76F006C2207 /* TSSettingsViewController.m */,
+				FDE94D361DA7D2FA006C2207 /* TSSOSViewController.h */,
+				FDE94D371DA7D2FA006C2207 /* TSSOSViewController.m */,
+				FDE94D391DA7EFDF006C2207 /* TSTelViewController.h */,
+				FDE94D3A1DA7EFDF006C2207 /* TSTelViewController.m */,
+				FDE94D3C1DA7F7D6006C2207 /* TSSensorViewController.h */,
+				FDE94D3D1DA7F7D6006C2207 /* TSSensorViewController.m */,
+				FDE94D3F1DA81D9F006C2207 /* TSLaunguageViewController.h */,
+				FDE94D401DA81D9F006C2207 /* TSLaunguageViewController.m */,
+				FDE94D421DA82603006C2207 /* TSNameDeviceViewController.h */,
+				FDE94D431DA82603006C2207 /* TSNameDeviceViewController.m */,
+				FDE94D451DA826F1006C2207 /* TSTimeDateViewController.h */,
+				FDE94D461DA826F1006C2207 /* TSTimeDateViewController.m */,
+				FDE94D481DA82A92006C2207 /* TSStatusViewController.h */,
+				FDE94D491DA82A92006C2207 /* TSStatusViewController.m */,
+				FDE94D4B1DA82AAF006C2207 /* TSAudioViewController.h */,
+				FDE94D4C1DA82AAF006C2207 /* TSAudioViewController.m */,
+				FDE94D4E1DA82AFE006C2207 /* TSHoldAlarmViewController.h */,
+				FDE94D4F1DA82AFF006C2207 /* TSHoldAlarmViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		FDE38C531DAAF7FD00D408F2 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				FDE94CFF1DA7A7E1006C2207 /* AppDelegate.h */,
+				FDE94D001DA7A7E1006C2207 /* AppDelegate.m */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
+		FDE38C541DAAF80D00D408F2 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				FDE94D511DA83431006C2207 /* TSTableViewCell.h */,
+				FDE94D521DA83431006C2207 /* TSTableViewCell.m */,
+			);
+			name = Cell;
+			sourceTree = "<group>";
+		};
+		FDE38C551DAAF81E00D408F2 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				FDE38C4F1DAAF7C400D408F2 /* TSPostingMessagesManager.h */,
+				FDE38C501DAAF7C400D408F2 /* TSPostingMessagesManager.m */,
+			);
+			name = Manager;
+			sourceTree = "<group>";
+		};
+		FDE38C561DAAFB4400D408F2 /* Catigory */ = {
+			isa = PBXGroup;
+			children = (
+				FDE38C571DAAFB8300D408F2 /* NSString+TSString.h */,
+				FDE38C581DAAFB8300D408F2 /* NSString+TSString.m */,
+			);
+			name = Catigory;
+			sourceTree = "<group>";
+		};
 		FDE94CF01DA7A7E0006C2207 = {
 			isa = PBXGroup;
 			children = (
@@ -139,32 +210,11 @@
 		FDE94CFB1DA7A7E1006C2207 /* Mobi-click */ = {
 			isa = PBXGroup;
 			children = (
-				FDE94CFF1DA7A7E1006C2207 /* AppDelegate.h */,
-				FDE94D001DA7A7E1006C2207 /* AppDelegate.m */,
-				FDE94D2F1DA7BF02006C2207 /* TSMeinViewController.h */,
-				FDE94D301DA7BF02006C2207 /* TSMeinViewController.m */,
-				FDE94D331DA7C76F006C2207 /* TSSettingsViewController.h */,
-				FDE94D341DA7C76F006C2207 /* TSSettingsViewController.m */,
-				FDE94D361DA7D2FA006C2207 /* TSSOSViewController.h */,
-				FDE94D371DA7D2FA006C2207 /* TSSOSViewController.m */,
-				FDE94D391DA7EFDF006C2207 /* TSTelViewController.h */,
-				FDE94D3A1DA7EFDF006C2207 /* TSTelViewController.m */,
-				FDE94D3C1DA7F7D6006C2207 /* TSSensorViewController.h */,
-				FDE94D3D1DA7F7D6006C2207 /* TSSensorViewController.m */,
-				FDE94D3F1DA81D9F006C2207 /* TSLaunguageViewController.h */,
-				FDE94D401DA81D9F006C2207 /* TSLaunguageViewController.m */,
-				FDE94D421DA82603006C2207 /* TSNameDeviceViewController.h */,
-				FDE94D431DA82603006C2207 /* TSNameDeviceViewController.m */,
-				FDE94D451DA826F1006C2207 /* TSTimeDateViewController.h */,
-				FDE94D461DA826F1006C2207 /* TSTimeDateViewController.m */,
-				FDE94D481DA82A92006C2207 /* TSStatusViewController.h */,
-				FDE94D491DA82A92006C2207 /* TSStatusViewController.m */,
-				FDE94D4B1DA82AAF006C2207 /* TSAudioViewController.h */,
-				FDE94D4C1DA82AAF006C2207 /* TSAudioViewController.m */,
-				FDE94D4E1DA82AFE006C2207 /* TSHoldAlarmViewController.h */,
-				FDE94D4F1DA82AFF006C2207 /* TSHoldAlarmViewController.m */,
-				FDE94D511DA83431006C2207 /* TSTableViewCell.h */,
-				FDE94D521DA83431006C2207 /* TSTableViewCell.m */,
+				FDE38C531DAAF7FD00D408F2 /* App */,
+				FDE38C541DAAF80D00D408F2 /* Cell */,
+				FDE38C551DAAF81E00D408F2 /* Manager */,
+				FDE38C561DAAFB4400D408F2 /* Catigory */,
+				FDE38C521DAAF7EB00D408F2 /* Controllers */,
 				FDE94D051DA7A7E1006C2207 /* Main.storyboard */,
 				FDE94D081DA7A7E1006C2207 /* Assets.xcassets */,
 				FDE94D0A1DA7A7E1006C2207 /* LaunchScreen.storyboard */,
@@ -355,8 +405,10 @@
 				FDE94D441DA82603006C2207 /* TSNameDeviceViewController.m in Sources */,
 				FDE94D501DA82AFF006C2207 /* TSHoldAlarmViewController.m in Sources */,
 				FDE94D4A1DA82A92006C2207 /* TSStatusViewController.m in Sources */,
+				FDE38C511DAAF7C400D408F2 /* TSPostingMessagesManager.m in Sources */,
 				FDE94CFE1DA7A7E1006C2207 /* main.m in Sources */,
 				FDE94D3B1DA7EFDF006C2207 /* TSTelViewController.m in Sources */,
+				FDE38C591DAAFB8300D408F2 /* NSString+TSString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

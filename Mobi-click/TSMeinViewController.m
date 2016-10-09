@@ -48,6 +48,7 @@
 - (IBAction)actionSendButton:(id)sender
 {
     
+    /*
     if (![MFMessageComposeViewController canSendText]) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Your device can not send text message" message:nil preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleCancel
@@ -57,6 +58,7 @@
         [alertController addAction:okAction];
         [self presentViewController:alertController animated:YES completion:nil];
     }
+     */
     
     
     NSString *pin = @"1513";
@@ -101,7 +103,8 @@
     [messageComposeViewController setRecipients:recipient];
     [messageComposeViewController setBody:message];
     
-    [self presentViewController:messageComposeViewController animated:YES completion:nil];
+    NSLog(@"message %@", message);
+//    [self presentViewController:messageComposeViewController animated:YES completion:nil];
     
 }
 
@@ -112,6 +115,8 @@
 -(void)messageComposeViewController:(MFMessageComposeViewController *)controller
                 didFinishWithResult:(MessageComposeResult)result
 {
+    
+    /*
     switch (result) {
         case MessageComposeResultCancelled:
             break;
@@ -135,6 +140,7 @@
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
+     */
 }
 
 

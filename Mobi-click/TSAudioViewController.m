@@ -56,7 +56,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     }
     
-    cell.textLabel.text = [NSString stringWithFormat:@"Rington %d", indexPath.row + 1];
+    cell.textLabel.text = [NSString stringWithFormat:@"Rington %ld", indexPath.row + 1];
     cell.textLabel.font = [UIFont fontWithName:@"System Bold" size:17];
     
     return  cell;
