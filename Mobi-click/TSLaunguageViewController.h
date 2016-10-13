@@ -8,6 +8,8 @@
 
 #import "TSMeinViewController.h"
 
+//extern NSString *selLaunguage;
+
 @interface TSLaunguageViewController : TSMeinViewController
 
 @end

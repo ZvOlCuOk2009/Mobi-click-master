@@ -7,7 +7,8 @@
 //
 
 #import "TSMeinViewController.h"
+#import "TSLaunguageViewController.h"
 
-@interface TSTimeDateViewController : TSMeinViewController
+@interface TSTimeDateViewController : TSLaunguageViewController
 
 @end

@@ -14,7 +14,7 @@
 #import <Messages/Messages.h>
 #import <MessageUI/MFMessageComposeViewController.h>
 
-@interface TSTelViewController () ///<MFMessageComposeViewControllerDelegate>
+@interface TSTelViewController () <MFMessageComposeViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *textField;
 @property (weak, nonatomic) IBOutlet UIButton *checkerButton;
@@ -24,6 +24,8 @@
 @property (strong, nonatomic) UIImage * noclickImage;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UIButton *sendButton;
 
 @end
 
@@ -48,6 +50,9 @@
 }
 
 
+#pragma marc Actions
+
+
 - (IBAction)actionChecker:(id)sender
 {
     if (self.switchCheker == NO) {
@@ -68,17 +73,18 @@
         
         if (self.switchCheker == YES) {
             
-            MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipientNumberPhone bodyMessage:[NSString prefixNumberPhone:[recipientNumberPhone objectAtIndex:0] checker:self.switchCheker]];
+            MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipientNumberPhone bodyMessage:[NSString prefixNumberPhoneAndPin:[recipientNumberPhone objectAtIndex:0] checker:self.switchCheker]];
+            messageComposeViewController.messageComposeDelegate = self;
             
-            [self presentViewController:messageComposeViewController animated:YES completion:nil];
+//            [self presentViewController:messageComposeViewController animated:YES completion:nil];
             
         } else {
             
-            [[TSPostingMessagesManager sharedManager] callingSubscriberByNumberPhone:[NSString prefixNumberPhone:[recipientNumberPhone objectAtIndex:0] checker:self.switchCheker]];
+            
       
         }
         
-        NSLog(@"%@", [NSString prefixNumberPhone:[recipientNumberPhone objectAtIndex:0] checker:self.switchCheker]);
+        NSLog(@"%@", [NSString prefixNumberPhoneAndPin:[recipientNumberPhone objectAtIndex:0] checker:self.switchCheker]);
         
     } else {
         
@@ -96,40 +102,8 @@
         
     }
     
-//    [self presentViewController:messageComposeViewController animated:YES completion:nil];
-
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
-
-//
-//- (void)messageComposeViewController:(NSArray *)phoneNumberToСall bodyMessage:(NSString *)bodyMessage
-//{
-//    MFMessageComposeViewController *messageComposeViewController = [[MFMessageComposeViewController alloc] init];
-//    messageComposeViewController.messageComposeDelegate = self;
-//    [messageComposeViewController setRecipients:phoneNumberToСall];
-//    [messageComposeViewController setBody:bodyMessage];
-//    
-//}
-//
-//
-//- (void)callingSubscriberByNumberPhone:(NSString *)phoneNumber
-//{
-//    NSString *numberPrefix = [NSString stringWithFormat:@"tel:%@", phoneNumber];
-//    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:numberPrefix]];
-//}
-//
-//
-//- (NSString *)prefixNumberPhone:(NSString *)numberPhone checker:(BOOL)checker
-//{
-//    NSString *checkerIsOn = nil;
-//    
-//    if (checker == YES) {
-//        checkerIsOn = @"S";
-//    } else if (checker == NO) {
-//        checkerIsOn = @"C";
-//    }
-//    
-//    return [NSString stringWithFormat:@"Set TEL1 %@ 49%@ %@#", checkerIsOn, numberPhone, PIN];
-//}
 
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
@@ -158,6 +132,17 @@ replacementString:(NSString *)string
 #pragma mark - Keyboard notification
 
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setLauguage];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+}
+
+
 - (void)keyboardDidShow:(NSNotification *)notification
 {
     NSDictionary *info = [notification userInfo];
@@ -168,7 +153,7 @@ replacementString:(NSString *)string
     
     CGRect aRect = self.view.frame;
     aRect.size.height -= kbSize.height;
-    if (!CGRectContainsPoint(aRect, self.view.frame.origin)) {
+    if (!CGRectContainsPoint(aRect, self.view.frame.origin) ) {
         CGPoint scrollPoint = CGPointMake(0.0, self.view.frame.origin.y - kbSize.height);
         [self.scrollView setContentOffset:scrollPoint animated:YES];
     }
@@ -188,6 +173,54 @@ replacementString:(NSString *)string
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+#pragma mark - MFMessageComposeViewControllerDelegate
+
+
+-(void)messageComposeViewController:(MFMessageComposeViewController *)controller
+                didFinishWithResult:(MessageComposeResult)result
+{
+    
+}
+
+
+#pragma mark - methods set launguage
+
+
+- (void)setLauguage
+{
+    NSString *language = [[NSUserDefaults standardUserDefaults] objectForKey:@"language"];
+    
+    if ([language isEqualToString:@"English"]) {
+        
+        [self setEngleshLaunguage];
+        
+    } else if ([language isEqualToString:@"German"]) {
+        
+        [self setGermanLaunguage];
+    }
+}
+
+
+- (void)setEngleshLaunguage
+{
+    [self.titleLabel setText:@"Phonebook programming"];
+    [self.sendButton setTitle:@"SEND" forState:UIControlStateNormal];
+}
+
+
+- (void)setGermanLaunguage
+{
+    [self.titleLabel setText:@"Programmierung Telefonnummern"];
+    [self.sendButton setTitle:@"SENDEN" forState:UIControlStateNormal];
+}
+
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 /*

@@ -17,6 +17,4 @@
 
 - (MFMessageComposeViewController *)messageComposeViewController:(NSArray *)phoneNumberToСall bodyMessage:(NSString *)bodyMessage;
 
-- (void)callingSubscriberByNumberPhone:(NSString *)phoneNumber;
-
 @end

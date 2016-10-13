@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FD9411121DAC21D9005291E0 /* ContactsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD9411111DAC21D9005291E0 /* ContactsUI.framework */; };
 		FDE38C511DAAF7C400D408F2 /* TSPostingMessagesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE38C501DAAF7C400D408F2 /* TSPostingMessagesManager.m */; };
 		FDE38C591DAAFB8300D408F2 /* NSString+TSString.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE38C581DAAFB8300D408F2 /* NSString+TSString.m */; };
 		FDE94CFE1DA7A7E1006C2207 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE94CFD1DA7A7E1006C2207 /* main.m */; };
@@ -49,6 +50,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FD94110F1DAC21AA005291E0 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
+		FD9411111DAC21D9005291E0 /* ContactsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ContactsUI.framework; path = System/Library/Frameworks/ContactsUI.framework; sourceTree = SDKROOT; };
 		FDE38C4F1DAAF7C400D408F2 /* TSPostingMessagesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSPostingMessagesManager.h; sourceTree = "<group>"; };
 		FDE38C501DAAF7C400D408F2 /* TSPostingMessagesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSPostingMessagesManager.m; sourceTree = "<group>"; };
 		FDE38C571DAAFB8300D408F2 /* NSString+TSString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+TSString.h"; sourceTree = "<group>"; };
@@ -100,6 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FD9411121DAC21D9005291E0 /* ContactsUI.framework in Frameworks */,
 				FDEF2B141DA929DC008D6AF6 /* MessageUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -254,6 +258,8 @@
 		FDEF2B121DA929DB008D6AF6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FD9411111DAC21D9005291E0 /* ContactsUI.framework */,
+				FD94110F1DAC21AA005291E0 /* Contacts.framework */,
 				FDEF2B131DA929DC008D6AF6 /* MessageUI.framework */,
 			);
 			name = Frameworks;
@@ -556,10 +562,15 @@
 		FDE94D271DA7A7E2006C2207 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7,
+					"$(ARCHS_STANDARD_32_BIT)",
+				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 5D7GRV784H;
 				INFOPLIST_FILE = "Mobi-click/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Tsvigun-Sasha.Mobi-click";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -569,10 +580,15 @@
 		FDE94D281DA7A7E2006C2207 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7,
+					"$(ARCHS_STANDARD_32_BIT)",
+				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 5D7GRV784H;
 				INFOPLIST_FILE = "Mobi-click/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Tsvigun-Sasha.Mobi-click";
 				PRODUCT_NAME = "$(TARGET_NAME)";

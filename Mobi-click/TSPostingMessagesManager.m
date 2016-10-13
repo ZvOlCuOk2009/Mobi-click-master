@@ -25,26 +25,17 @@
 - (MFMessageComposeViewController *)messageComposeViewController:(NSArray *)phoneNumberToСall bodyMessage:(NSString *)bodyMessage
 {
     MFMessageComposeViewController *messageComposeViewController = [[MFMessageComposeViewController alloc] init];
-    messageComposeViewController.messageComposeDelegate = self;
     [messageComposeViewController setRecipients:phoneNumberToСall];
     [messageComposeViewController setBody:bodyMessage];
     
     return messageComposeViewController;
-    //    [self presentViewController:messageComposeViewController animated:YES completion:nil];
-}
-
-
-- (void)callingSubscriberByNumberPhone:(NSString *)phoneNumber
-{
-    NSString *numberPrefix = [NSString stringWithFormat:@"tel:%@", phoneNumber];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:numberPrefix]];
 }
 
 
 #pragma mark - MFMessageComposeViewControllerDelegate
 
 
--(void)messageComposeViewController:(MFMessageComposeViewController *)controller
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller
                 didFinishWithResult:(MessageComposeResult)result
 {
     

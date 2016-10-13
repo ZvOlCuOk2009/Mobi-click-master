@@ -8,6 +8,8 @@
 
 #import "TSMeinViewController.h"
 
-@interface TSSensorViewController : TSMeinViewController
+extern NSString *const ValuesPickerViewNotification;
+
+@interface TSSensorViewController : UIViewController
 
 @end

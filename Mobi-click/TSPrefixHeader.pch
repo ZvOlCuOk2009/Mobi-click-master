@@ -15,6 +15,4 @@
 #define VALID_CHARACTER @"1234567890"
 #define LIMIT_CHARACTER 10
 
-#define PIN @"1513"
-
 #endif /* TSPrefixHeader_pch */

@@ -8,11 +8,14 @@
 
 #import "TSSOSViewController.h"
 #import "TSPrefixHeader.pch"
+#import "TSPostingMessagesManager.h"
+#import "NSString+TSString.h"
 
 #import <Messages/Messages.h>
 #import <MessageUI/MFMessageComposeViewController.h>
+#import <ContactsUI/ContactsUI.h>
 
-@interface TSSOSViewController () <MFMessageComposeViewControllerDelegate, UITextFieldDelegate>
+@interface TSSOSViewController () <MFMessageComposeViewControllerDelegate, UITextFieldDelegate, CNContactPickerDelegate>
 
 @property (strong, nonatomic) IBOutletCollection(UITextField) NSArray *textFieldOutletCollection;
 
@@ -22,13 +25,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *checkerButtonFore;
 @property (weak, nonatomic) IBOutlet UIButton *checkerButtonFive;
 @property (weak, nonatomic) IBOutlet UIButton *checkerButtonSix;
-
-@property (assign, nonatomic) BOOL switchChekerOne;
-@property (assign, nonatomic) BOOL switchChekerTwo;
-@property (assign, nonatomic) BOOL switchChekerThree;
-@property (assign, nonatomic) BOOL switchChekerFore;
-@property (assign, nonatomic) BOOL switchChekerFive;
-@property (assign, nonatomic) BOOL switchChekerSix;
 
 @property (weak, nonatomic) IBOutlet UITextField *numberTelTextFieldOne;
 @property (weak, nonatomic) IBOutlet UITextField *numberTelTextFieldTwo;
@@ -40,6 +36,21 @@
 @property (strong, nonatomic) UIImage * clickImage;
 @property (strong, nonatomic) UIImage * noclickImage;
 
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UIButton *sendButton;
+
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (strong, nonatomic) CNContactPickerViewController *contactPicker;
+
+@property (assign, nonatomic) BOOL switchChekerOne;
+@property (assign, nonatomic) BOOL switchChekerTwo;
+@property (assign, nonatomic) BOOL switchChekerThree;
+@property (assign, nonatomic) BOOL switchChekerFore;
+@property (assign, nonatomic) BOOL switchChekerFive;
+@property (assign, nonatomic) BOOL switchChekerSix;
+
+@property (strong, nonatomic) NSArray *recipient;
+
 @end
 
 @implementation TSSOSViewController
@@ -48,17 +59,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-
-    self.numberTelTextFieldOne.delegate = self;
-    self.numberTelTextFieldTwo.delegate = self;
-    self.numberTelTextFieldThree.delegate = self;
-    self.numberTelTextFieldFore.delegate = self;
-    self.numberTelTextFieldFive.delegate = self;
-    self.numberTelTextFieldSix.delegate = self;
     
     for (UITextField *textField in self.textFieldOutletCollection)
     {
         textField.layer.borderColor = [BLUE_COLOR CGColor];
+        textField.delegate = self;
     }
     
     
@@ -89,12 +94,14 @@
 - (IBAction)actionCheckerOne:(UIButton *)sender
 {
   
-    if (self.switchChekerOne == NO) {
-        [self.checkerButtonOne setImage:self.clickImage forState:UIControlStateNormal];
-        self.switchChekerOne = YES;
-    } else if (self.switchChekerOne == YES) {
-        [self.checkerButtonOne setImage:self.noclickImage forState:UIControlStateNormal];
-        self.switchChekerOne = NO;
+    if (![self.numberTelTextFieldOne.text isEqualToString:@""]) {
+        if (self.switchChekerOne == NO) {
+            [self.checkerButtonOne setImage:self.clickImage forState:UIControlStateNormal];
+            self.switchChekerOne = YES;
+        } else if (self.switchChekerOne == YES) {
+            [self.checkerButtonOne setImage:self.noclickImage forState:UIControlStateNormal];
+            self.switchChekerOne = NO;
+        }
     }
     
 }
@@ -103,12 +110,14 @@
 - (IBAction)actionCheckerTwo:(id)sender
 {
     
-    if (self.switchChekerTwo == NO) {
-        [self.checkerButtonTwo setImage:self.clickImage forState:UIControlStateNormal];
-        self.switchChekerTwo = YES;
-    } else if (self.switchChekerTwo == YES) {
-        [self.checkerButtonTwo setImage:self.noclickImage forState:UIControlStateNormal];
-        self.switchChekerTwo = NO;
+    if (![self.numberTelTextFieldTwo.text isEqualToString:@""]) {
+        if (self.switchChekerTwo == NO) {
+            [self.checkerButtonTwo setImage:self.clickImage forState:UIControlStateNormal];
+            self.switchChekerTwo = YES;
+        } else if (self.switchChekerTwo == YES) {
+            [self.checkerButtonTwo setImage:self.noclickImage forState:UIControlStateNormal];
+            self.switchChekerTwo = NO;
+        }
     }
     
 }
@@ -117,12 +126,14 @@
 - (IBAction)actionCheckerThree:(id)sender
 {
     
-    if (self.switchChekerThree == NO) {
-        [self.checkerButtonThree setImage:self.clickImage forState:UIControlStateNormal];
-        self.switchChekerThree = YES;
-    } else if (self.switchChekerThree == YES) {
-        [self.checkerButtonThree setImage:self.noclickImage forState:UIControlStateNormal];
-        self.switchChekerThree = NO;
+    if (![self.numberTelTextFieldThree.text isEqualToString:@""]) {
+        if (self.switchChekerThree == NO) {
+            [self.checkerButtonThree setImage:self.clickImage forState:UIControlStateNormal];
+            self.switchChekerThree = YES;
+        } else if (self.switchChekerThree == YES) {
+            [self.checkerButtonThree setImage:self.noclickImage forState:UIControlStateNormal];
+            self.switchChekerThree = NO;
+        }
     }
     
 }
@@ -131,26 +142,30 @@
 - (IBAction)actionCheckerFore:(id)sender
 {
     
-    if (self.switchChekerFore == NO) {
-        [self.checkerButtonFore setImage:self.clickImage forState:UIControlStateNormal];
-        self.switchChekerFore = YES;
-    } else if (self.switchChekerFore == YES) {
-        [self.checkerButtonFore setImage:self.noclickImage forState:UIControlStateNormal];
-        self.switchChekerFore = NO;
+    if (![self.numberTelTextFieldFore.text isEqualToString:@""]) {
+        if (self.switchChekerFore == NO) {
+            [self.checkerButtonFore setImage:self.clickImage forState:UIControlStateNormal];
+            self.switchChekerFore = YES;
+        } else if (self.switchChekerFore == YES) {
+            [self.checkerButtonFore setImage:self.noclickImage forState:UIControlStateNormal];
+            self.switchChekerFore = NO;
+        }
     }
-    
+
 }
 
 
 - (IBAction)actionCheckerFive:(id)sender
 {
     
-    if (self.switchChekerFive == NO) {
-        [self.checkerButtonFive setImage:self.clickImage forState:UIControlStateNormal];
-        self.switchChekerFive = YES;
-    } else if (self.switchChekerFive == YES) {
-        [self.checkerButtonFive setImage:self.noclickImage forState:UIControlStateNormal];
-        self.switchChekerFive = NO;
+    if (![self.numberTelTextFieldFive.text isEqualToString:@""]) {
+        if (self.switchChekerFive == NO) {
+            [self.checkerButtonFive setImage:self.clickImage forState:UIControlStateNormal];
+            self.switchChekerFive = YES;
+        } else if (self.switchChekerFive == YES) {
+            [self.checkerButtonFive setImage:self.noclickImage forState:UIControlStateNormal];
+            self.switchChekerFive = NO;
+        }
     }
     
 }
@@ -159,12 +174,14 @@
 - (IBAction)actionCheckerSix:(id)sender
 {
     
-    if (self.switchChekerSix == NO) {
-        [self.checkerButtonSix setImage:self.clickImage forState:UIControlStateNormal];
-        self.switchChekerSix = YES;
-    } else if (self.switchChekerSix == YES) {
-        [self.checkerButtonSix setImage:self.noclickImage forState:UIControlStateNormal];
-        self.switchChekerSix = NO;
+    if (![self.numberTelTextFieldSix.text isEqualToString:@""]) {
+        if (self.switchChekerSix == NO) {
+            [self.checkerButtonSix setImage:self.clickImage forState:UIControlStateNormal];
+            self.switchChekerSix = YES;
+        } else if (self.switchChekerSix == YES) {
+            [self.checkerButtonSix setImage:self.noclickImage forState:UIControlStateNormal];
+            self.switchChekerSix = NO;
+        }
     }
     
 }
@@ -180,82 +197,11 @@
         ![self.numberTelTextFieldSix.text isEqualToString:@""]) {
         
         
-        NSArray *recipientNumberPhoneOne = @[self.numberTelTextFieldOne.text];
-        NSArray *recipientNumberPhoneTwo = @[self.numberTelTextFieldTwo.text];
-        NSArray *recipientNumberPhoneThree = @[self.numberTelTextFieldThree.text];
-        NSArray *recipientNumberPhoneFore = @[self.numberTelTextFieldFore.text];
-        NSArray *recipientNumberPhoneFive = @[self.numberTelTextFieldFive.text];
-        NSArray *recipientNumberPhoneSix = @[self.numberTelTextFieldSix.text];
+        self.contactPicker = [[CNContactPickerViewController alloc] init];
+        self.contactPicker.delegate = self;
         
-        
-        if (self.switchChekerOne == YES) {
-            
-            [self messageComposeViewController:recipientNumberPhoneOne bodyMessage:[self prefixNumberPhone:[recipientNumberPhoneOne objectAtIndex:0] checker:self.switchChekerOne]];
-            
-        } else {
-            
-            [self callingSubscriberByNumberPhone:[self prefixNumberPhone:[recipientNumberPhoneOne objectAtIndex:0] checker:self.switchChekerOne]];
-        }
-        
-        
-        if (self.switchChekerTwo == YES) {
-            
-            [self messageComposeViewController:recipientNumberPhoneTwo bodyMessage:[self prefixNumberPhone:[recipientNumberPhoneTwo objectAtIndex:0] checker:self.switchChekerTwo]];
-            
-        } else {
-            
-            [self callingSubscriberByNumberPhone:[self prefixNumberPhone:[recipientNumberPhoneTwo objectAtIndex:0] checker:self.switchChekerTwo]];
-        }
-        
-        
-        if (self.switchChekerThree == YES) {
-            
-            [self messageComposeViewController:recipientNumberPhoneThree bodyMessage:[self prefixNumberPhone:[recipientNumberPhoneThree objectAtIndex:0] checker:self.switchChekerThree]];
-            
-        } else {
-            
-            [self callingSubscriberByNumberPhone:[self prefixNumberPhone:[recipientNumberPhoneThree objectAtIndex:0] checker:self.switchChekerThree]];
-        }
-        
-        
-        if (self.switchChekerFore == YES) {
-            
-            [self messageComposeViewController:recipientNumberPhoneFore bodyMessage:[self prefixNumberPhone:[recipientNumberPhoneFore objectAtIndex:0] checker:self.switchChekerFore]];
-            
-        } else {
-            
-            [self callingSubscriberByNumberPhone:[self prefixNumberPhone:[recipientNumberPhoneFore objectAtIndex:0] checker:self.switchChekerFore]];
-        }
-        
-        
-        if (self.switchChekerFive == YES) {
-            
-            [self messageComposeViewController:recipientNumberPhoneFive bodyMessage:[self prefixNumberPhone:[recipientNumberPhoneFive objectAtIndex:0] checker:self.switchChekerFive]];
-            
-        } else {
-            
-            [self callingSubscriberByNumberPhone:[self prefixNumberPhone:[recipientNumberPhoneFive objectAtIndex:0] checker:self.switchChekerFive]];
-        }
-        
-        
-        
-        if (self.switchChekerSix == YES) {
-            
-            [self messageComposeViewController:recipientNumberPhoneSix bodyMessage:[self prefixNumberPhone:[recipientNumberPhoneSix objectAtIndex:0] checker:self.switchChekerSix]];
-            
-        } else {
-            
-            [self callingSubscriberByNumberPhone:[self prefixNumberPhone:[recipientNumberPhoneSix objectAtIndex:0] checker:self.switchChekerSix]];
-        }
-        
-        
-        
-        NSLog(@"%@\n%@\n%@\n%@\n%@\n%@", [self prefixNumberPhone:[recipientNumberPhoneOne objectAtIndex:0] checker:self.switchChekerOne],
-              [self prefixNumberPhone:[recipientNumberPhoneTwo objectAtIndex:0] checker:self.switchChekerTwo],
-              [self prefixNumberPhone:[recipientNumberPhoneThree objectAtIndex:0] checker:self.switchChekerThree],
-              [self prefixNumberPhone:[recipientNumberPhoneFore objectAtIndex:0] checker:self.switchChekerFore],
-              [self prefixNumberPhone:[recipientNumberPhoneFive objectAtIndex:0] checker:self.switchChekerFive],
-              [self prefixNumberPhone:[recipientNumberPhoneSix objectAtIndex:0] checker:self.switchChekerSix]);
+        [self presentViewController:self.contactPicker animated:YES completion:nil];
+    
         
     } else {
         
@@ -278,22 +224,90 @@
 }
 
 
-- (void)messageComposeViewController:(NSArray *)phoneNumberToСall bodyMessage:(NSString *)bodyMessage
+#pragma mark - CNContactPickerDelegate
+
+
+- (void)contactPicker:(CNContactPickerViewController *)picker didSelectContact:(CNContact *)contact
 {
-    MFMessageComposeViewController *messageComposeViewController = [[MFMessageComposeViewController alloc] init];
-    messageComposeViewController.messageComposeDelegate = self;
-    [messageComposeViewController setRecipients:phoneNumberToСall];
-    [messageComposeViewController setBody:bodyMessage];
     
-//    [self presentViewController:messageComposeViewController animated:YES completion:nil];
+    NSArray *phoneNumbers = [contact phoneNumbers];
+    CNLabeledValue *number = [phoneNumbers objectAtIndex:0];
+    NSString *numberPhone = [[number value] stringValue];
+    self.recipient = @[numberPhone];
+    
+    [self sendMessage:self.recipient];
 }
 
 
-- (void)callingSubscriberByNumberPhone:(NSString *)phoneNumber
+#pragma mark - MFMessageComposeViewController
+
+
+- (void)sendMessage:(NSArray *)recipients
 {
-    NSString *numberPrefix = [NSString stringWithFormat:@"tel:%@", phoneNumber];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:numberPrefix]];
+    
+    NSArray *numberPhones = @[self.numberTelTextFieldOne.text,
+                              self.numberTelTextFieldTwo.text,
+                              self.numberTelTextFieldThree.text,
+                              self.numberTelTextFieldFore.text,
+                              self.numberTelTextFieldFive.text,
+                              self.numberTelTextFieldSix.text];
+    
+    
+    NSNumber *oneChacker = [NSNumber numberWithBool:self.switchChekerOne];
+    NSNumber *twoChacker = [NSNumber numberWithBool:self.switchChekerTwo];
+    NSNumber *threeChacker = [NSNumber numberWithBool:self.switchChekerThree];
+    NSNumber *foreChacker = [NSNumber numberWithBool:self.switchChekerFore];
+    NSNumber *fiveChacker = [NSNumber numberWithBool:self.switchChekerFive];
+    NSNumber *sixChacker = [NSNumber numberWithBool:self.switchChekerSix];
+    
+    
+    NSArray *chackerPosition = @[oneChacker, twoChacker, threeChacker, foreChacker, fiveChacker, sixChacker];
+    
+    NSMutableArray *chakersString = [NSMutableArray array];
+    
+    for (NSNumber *chacker in chackerPosition) {
+        
+        BOOL chack = [chacker boolValue];
+        NSString *checkerIsOn = nil;
+        
+        if (chack == YES) {
+            checkerIsOn = @"S";
+        } else if (chack == NO) {
+            checkerIsOn = @"C";
+        }
+        [chakersString addObject:checkerIsOn];
+    }
+    
+    NSLog(@"comand %@", [NSString prefixNumberPhone:numberPhones checkerPosirion:chakersString]);
+
+    
+    MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString prefixNumberPhone:numberPhones checkerPosirion:chakersString]];
+    messageComposeViewController.messageComposeDelegate = self;
+    
+    [self dismissViewControllerAnimated:NO completion:nil];
+    [self presentViewController:messageComposeViewController animated:YES completion:nil];
+    
 }
+
+
+#pragma mark - MFMessageComposeViewControllerDelegate
+
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller
+                 didFinishWithResult:(MessageComposeResult)result
+{
+    if (result == MessageComposeResultCancelled) {
+        NSLog(@"Message cancelled");
+    }
+    else if (result == MessageComposeResultSent) {
+        NSLog(@"Message sent");
+    }
+    else {
+        NSLog(@"Message failed");
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
@@ -334,33 +348,111 @@ replacementString:(NSString *)string
 }
 
 
-- (NSString *)prefixNumberPhone:(NSString *)numberPhone checker:(BOOL)checker
+#pragma mark - Keyboard notification
+
+
+- (void)viewWillAppear:(BOOL)animated
 {
-    NSString *checkerIsOn = nil;
+    [super viewWillAppear:animated];
+    [self setLauguage];
     
-    if (checker == YES) {
-        checkerIsOn = @"S";
-    } else if (checker == NO) {
-        checkerIsOn = @"C";
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     
-    return [NSString stringWithFormat:@"Set TEL1 %@ 49%@", checkerIsOn, numberPhone];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
 }
 
 
-#pragma mark - MFMessageComposeViewControllerDelegate
-
-
--(void)messageComposeViewController:(MFMessageComposeViewController *)controller
-                didFinishWithResult:(MessageComposeResult)result
+- (void)keyboardDidShow:(NSNotification *)notification
 {
+    NSDictionary *info = [notification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+    self.scrollView.contentInset = contentInsets;
+    self.scrollView.scrollIndicatorInsets = contentInsets;
     
+    CGRect aRect = self.view.frame;
+    aRect.size.height -= kbSize.height;
+    if (!CGRectContainsPoint(aRect, self.view.frame.origin) ) {
+        CGPoint scrollPoint = CGPointMake(0.0, self.view.frame.origin.y - kbSize.height);
+        [self.scrollView setContentOffset:scrollPoint animated:YES];
+    }
+    
+}
+
+
+- (void)keyboardDidHide:(NSNotification *)notification
+{
+    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    self.scrollView.contentInset = contentInsets;
+    self.scrollView.scrollIndicatorInsets = contentInsets;
+    
+}
+
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if (textField == self.numberTelTextFieldOne) {
+        [textField resignFirstResponder];
+        [self.numberTelTextFieldTwo becomeFirstResponder];
+    } else if (textField == self.numberTelTextFieldTwo) {
+        [textField resignFirstResponder];
+        [self.numberTelTextFieldThree becomeFirstResponder];
+    } else if (textField == self.numberTelTextFieldThree) {
+        [textField resignFirstResponder];
+        [self.numberTelTextFieldFore becomeFirstResponder];
+    } else if (textField == self.numberTelTextFieldFore) {
+        [textField resignFirstResponder];
+        [self.numberTelTextFieldFive becomeFirstResponder];
+    } else if (textField == self.numberTelTextFieldFive) {
+        [textField resignFirstResponder];
+        [self.numberTelTextFieldSix becomeFirstResponder];
+    }
+
+    return YES;
+}
+
+
+#pragma mark - methods set launguage
+
+
+- (void)setLauguage
+{
+    NSString *language = [[NSUserDefaults standardUserDefaults] objectForKey:@"language"];
+    
+    if ([language isEqualToString:@"English"]) {
+        
+        [self setEngleshLaunguage];
+        
+    } else if ([language isEqualToString:@"German"]) {
+        
+        [self setGermanLaunguage];
+    }
+}
+
+
+- (void)setEngleshLaunguage
+{
+    [self.titleLabel setText:@"Phonebook programming"];
+    [self.sendButton setTitle:@"SEND" forState:UIControlStateNormal];
+}
+
+
+- (void)setGermanLaunguage
+{
+    [self.titleLabel setText:@"Programmierung Telefonnummern"];
+    [self.sendButton setTitle:@"SENDEN" forState:UIControlStateNormal];
 }
 
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
