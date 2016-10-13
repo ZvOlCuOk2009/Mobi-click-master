@@ -10,10 +10,11 @@
 
 @interface NSString (TSString)
 
-+ (NSString *)prefixNumberPhone:(NSArray *)numberPhones checkerPosirion:(NSArray *)checkers;
-+ (NSString *)prefixNumberPhoneAndPin:(NSString *)numberPhone checker:(BOOL)checker;
++ (NSString *)sosComand:(NSArray *)numberPhones checkerPosirion:(NSArray *)checkers;
++ (NSString *)telComand:(NSString *)numberPhone checker:(BOOL)checker;
 + (NSString *)nameDiviceComand:(NSString *)nameDevice;
 + (NSString *)setTimeComand:(NSDictionary *)dictionaryValue;
-
++ (NSString *)changePinComand:(NSString *)newPin;
++ (NSString *)changeLaunguageComand:(NSString *)newLaunguage;
 
 @end

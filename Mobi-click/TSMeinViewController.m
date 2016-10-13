@@ -40,7 +40,6 @@
 @property (strong, nonatomic) NSString *move;
 @property (strong, nonatomic) NSString *voice;
 @property (strong, nonatomic) NSString *vibra;
-@property (strong, nonatomic) NSString *nameDevice;
 
 @property (strong, nonatomic) NSArray *recipient;
 @property (strong, nonatomic) NSArray *comands;
@@ -65,7 +64,9 @@
     if (counter == 0) {
         
         NSString *defaultPin = @"1513";
+        NSString *nameDevice = @"Compact 4";
         [self.userDefaults setObject:defaultPin forKey:@"pin"];
+        [self.userDefaults setObject:nameDevice forKey:@"nameDevice"];
         [self.userDefaults setInteger:1 forKey:@"counter"];
         [self.userDefaults synchronize];
     }
@@ -73,11 +74,13 @@
 }
 
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.nameDevice = [[NSUserDefaults standardUserDefaults] objectForKey:@"nameDevice"];
     [self setLaunguage];
+    
+    NSString *nameDevice = [self.userDefaults objectForKey:@"nameDevice"];
+    [self.deviceButton setTitle:nameDevice forState:UIControlStateNormal];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(valuesPickerViewSensorContrNotification:)
@@ -88,7 +91,7 @@
 }
 
 
--(void)viewDidDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
     [self savePositionsSwitchs];
 }
@@ -126,6 +129,7 @@
     self.deviceButton.layer.borderColor = BLUE_COLOR.CGColor;
     self.sosButton.layer.borderColor = BLUE_COLOR.CGColor;
     self.telButton.layer.borderColor = BLUE_COLOR.CGColor;
+    
     
     BOOL alarm = [self.userDefaults boolForKey:@"alarm"];
     BOOL move = [self.userDefaults boolForKey:@"move"];
@@ -175,9 +179,7 @@
     
     
     NSArray *comands = @[self.alarm, self.move, self.voice, self.vibra];
-    
-    NSLog(@"comands %@, %@, %@, %@", self.alarm, self.move, self.voice, self.vibra);
-    
+        
     return comands;
 }
 
@@ -289,7 +291,6 @@
     [self.moveLabel setText:@"Move"];
     [self.voiceLabel setText:@"Voice"];
     [self.vibraLabel setText:@"Vibra"];
-    [self.deviceButton setTitle:self.nameDevice forState:UIControlStateNormal];
     [self.sosButton setTitle:@"Phone numbers" forState:UIControlStateNormal];
     [self.telButton setTitle:@"Phone numbers" forState:UIControlStateNormal];
     [self.sendButton setTitle:@"SEND" forState:UIControlStateNormal];
@@ -305,7 +306,6 @@
     [self.moveLabel setText:@"Bewegung"];
     [self.voiceLabel setText:@"Stimme"];
     [self.vibraLabel setText:@"Vibra"];
-    [self.deviceButton setTitle:self.nameDevice forState:UIControlStateNormal];
     [self.sosButton setTitle:@"Telefonnummern" forState:UIControlStateNormal];
     [self.telButton setTitle:@"Telefonnummern" forState:UIControlStateNormal];
     [self.sendButton setTitle:@"SENDEN" forState:UIControlStateNormal];

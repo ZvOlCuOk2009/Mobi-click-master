@@ -23,7 +23,7 @@ static NSString *pin;
     return self;
 }
 
-+ (NSString *)prefixNumberPhone:(NSArray *)numberPhones checkerPosirion:(NSArray *)checker
++ (NSString *)sosComand:(NSArray *)numberPhones checkerPosirion:(NSArray *)checker
 {
     
     NSString *numberOne = [numberPhones objectAtIndex:0];
@@ -43,14 +43,14 @@ static NSString *pin;
     
     NSString *prefix = @"49";
     
-    NSString *comand = [NSString stringWithFormat:@"Set TEL1 %@ %@%@ %@ %@%@ %@ %@%@ %@ %@%@ %@ %@%@ %@ %@%@ #%@", checkerOne, prefix, numberOne, checkerTwo, prefix, numberTwo, checkerThree, prefix, numberThree, checkerFore, prefix, numberFore, checkerFive, prefix, numberFive, checkerSix, prefix, numberSix, pin];
+    NSString *sosComand = [NSString stringWithFormat:@"Set TEL1 %@ %@%@ %@ %@%@ %@ %@%@ %@ %@%@ %@ %@%@ %@ %@%@ #%@", checkerOne, prefix, numberOne, checkerTwo, prefix, numberTwo, checkerThree, prefix, numberThree, checkerFore, prefix, numberFore, checkerFive, prefix, numberFive, checkerSix, prefix, numberSix, pin];
     
-    return comand;
+    return sosComand;
     
 }
 
 
-+ (NSString *)prefixNumberPhoneAndPin:(NSString *)numberPhone checker:(BOOL)checker
++ (NSString *)telComand:(NSString *)numberPhone checker:(BOOL)checker
 {
     NSString *checkerIsOn = nil;
     
@@ -64,9 +64,33 @@ static NSString *pin;
 }
 
 
-+ (NSString *)nameDivice:(NSString *)nameDevice
++ (NSString *)nameDiviceComand:(NSString *)nameDevice
 {
-    return [NSString stringWithFormat:@"SET NAME %@ %@#", nameDevice, pin];
+    return [NSString stringWithFormat:@"SET NAME %@ #%@", nameDevice, pin];
+}
+
+
++ (NSString *)setTimeComand:(NSDictionary *)dictionaryValue
+{
+    NSString *hours = [dictionaryValue objectForKey:@"hours"];
+    NSString *minutes = [dictionaryValue objectForKey:@"minutes"];
+    NSString *days = [dictionaryValue objectForKey:@"days"];
+    NSString *months = [dictionaryValue objectForKey:@"months"];
+    NSString *years = [dictionaryValue objectForKey:@"years"];
+    
+    return [NSString stringWithFormat:@"SET TIME %@ %@ %@ %@ %@ #%@", hours, minutes, days, months, years, pin];
+}
+
+
++ (NSString *)changePinComand:(NSString *)newPin
+{
+    return [NSString stringWithFormat:@"SET PIN %@ #%@", newPin, pin];
+}
+
+
++ (NSString *)changeLaunguageComand:(NSString *)newLaunguage
+{
+    return [NSString stringWithFormat:@"SET LANGUAGE %@ #%@", newLaunguage, pin];
 }
 
 @end

@@ -14,9 +14,9 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 
 @interface TSSensorViewController () <UIPickerViewDataSource, UIPickerViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UIPickerView *pickerViewMove;
-@property (weak, nonatomic) IBOutlet UIPickerView *pickerViewVoice;
-@property (weak, nonatomic) IBOutlet UIPickerView *pickerViewVibra;
+@property (weak, nonatomic) IBOutlet UIPickerView *movePickerView;
+@property (weak, nonatomic) IBOutlet UIPickerView *voicePickerView;
+@property (weak, nonatomic) IBOutlet UIPickerView *vibraPickerView;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *moveLabel;
 @property (weak, nonatomic) IBOutlet UILabel *voiceLabel;
@@ -43,7 +43,7 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 {
     [super viewWillAppear:animated];
     [self setLauguage];
-    [self setSettingsPickerView];
+    [self loadSettingsPickerView];
 }
 
 
@@ -53,9 +53,9 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
     
     self.dataSource = @[@"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"10"];
     
-    self.pickerViewMove.layer.borderColor = [BLUE_COLOR CGColor];
-    self.pickerViewVoice.layer.borderColor = [BLUE_COLOR CGColor];
-    self.pickerViewVibra.layer.borderColor = [BLUE_COLOR CGColor];
+    self.movePickerView.layer.borderColor = [BLUE_COLOR CGColor];
+    self.voicePickerView.layer.borderColor = [BLUE_COLOR CGColor];
+    self.vibraPickerView.layer.borderColor = [BLUE_COLOR CGColor];
     
     UIImageView *titleImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     [titleImageView setFrame:CGRectMake(0, 0, 250, 44)];
@@ -68,14 +68,14 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 
 - (IBAction)actionSendButton:(id)sender
 {
-    NSString *valuePickerViewMove = [self pickerView:self.pickerViewMove
-                           titleForRow:[self.pickerViewMove selectedRowInComponent:0] forComponent:0];
+    NSString *valuePickerViewMove = [self pickerView:self.movePickerView
+                           titleForRow:[self.movePickerView selectedRowInComponent:0] forComponent:0];
     
-    NSString *valuePickerViewVoice = [self pickerView:self.pickerViewVoice
-                              titleForRow:[self.pickerViewVoice selectedRowInComponent:0] forComponent:0];
+    NSString *valuePickerViewVoice = [self pickerView:self.voicePickerView
+                              titleForRow:[self.voicePickerView selectedRowInComponent:0] forComponent:0];
     
-    NSString *valuePickerViewVibra = [self pickerView:self.pickerViewVibra
-                              titleForRow:[self.pickerViewVibra selectedRowInComponent:0] forComponent:0];
+    NSString *valuePickerViewVibra = [self pickerView:self.vibraPickerView
+                              titleForRow:[self.vibraPickerView selectedRowInComponent:0] forComponent:0];
 
     NSLog(@"%@ %@ %@", valuePickerViewMove, valuePickerViewVoice, valuePickerViewVibra);
     
@@ -99,15 +99,15 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 }
 
 
-- (void)setSettingsPickerView
+- (void)loadSettingsPickerView
 {
     NSInteger valueMovePC = [self.userDefaults integerForKey:@"valueMove"] - 1;
     NSInteger valueVoicePC = [self.userDefaults integerForKey:@"valueVoice"] - 1;
     NSInteger valueVibraPC = [self.userDefaults integerForKey:@"valueVibra"] - 1;
     
-    [self.pickerViewMove selectRow:valueMovePC inComponent:0 animated:NO];
-    [self.pickerViewVoice selectRow:valueVoicePC inComponent:0 animated:NO];
-    [self.pickerViewVibra selectRow:valueVibraPC inComponent:0 animated:NO];
+    [self.movePickerView selectRow:valueMovePC inComponent:0 animated:NO];
+    [self.voicePickerView selectRow:valueVoicePC inComponent:0 animated:NO];
+    [self.vibraPickerView selectRow:valueVibraPC inComponent:0 animated:NO];
 }
 
 

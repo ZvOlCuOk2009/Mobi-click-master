@@ -206,7 +206,7 @@
     } else {
         
         
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"You must enter at least one phone number to send messages"
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"You must enter at least one phone number to send comand"
                                                                                  message:nil
                                                                           preferredStyle:UIAlertControllerStyleAlert];
         
@@ -220,7 +220,6 @@
         
     }
 
-//    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 
@@ -278,10 +277,10 @@
         [chakersString addObject:checkerIsOn];
     }
     
-    NSLog(@"comand %@", [NSString prefixNumberPhone:numberPhones checkerPosirion:chakersString]);
+    NSLog(@"comand %@", [NSString sosComand:numberPhones checkerPosirion:chakersString]);
 
     
-    MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString prefixNumberPhone:numberPhones checkerPosirion:chakersString]];
+    MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString sosComand:numberPhones checkerPosirion:chakersString]];
     messageComposeViewController.messageComposeDelegate = self;
     
     [self dismissViewControllerAnimated:NO completion:nil];
@@ -387,6 +386,9 @@ replacementString:(NSString *)string
     self.scrollView.scrollIndicatorInsets = contentInsets;
     
 }
+
+
+#pragma mark - UITextFieldDelegate
 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField

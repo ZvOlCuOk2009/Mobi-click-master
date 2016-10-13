@@ -7,9 +7,15 @@
 //
 
 #import "TSTimeDateViewController.h"
+#import "TSPostingMessagesManager.h"
+#import "NSString+TSString.h"
 #import "TSPrefixHeader.pch"
 
-@interface TSTimeDateViewController ()
+#import <Messages/Messages.h>
+#import <MessageUI/MFMessageComposeViewController.h>
+#import <ContactsUI/ContactsUI.h>
+
+@interface TSTimeDateViewController () <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIPickerView *hoursPickerView;
 @property (weak, nonatomic) IBOutlet UIPickerView *minutesPickerView;
@@ -28,13 +34,16 @@
 @property (strong, nonatomic) NSMutableArray *dataSourceMonths;
 @property (strong, nonatomic) NSMutableArray *dataSourceYears;
 
+@property (strong, nonatomic) NSUserDefaults *userDefaults;
+@property (strong, nonatomic) CNContactPickerViewController *contactPicker; 
+@property (strong, nonatomic) NSArray *recipient;
+
 @end
 
 @implementation TSTimeDateViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     [self configureController];
 }
@@ -44,11 +53,18 @@
 {
     [super viewWillAppear:animated];
     [self setLauguage];
+    [self loadSettingsPickerView];
 }
 
 
 - (void)configureController
 {
+    
+    self.userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    UIImageView *titleImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
+    [titleImageView setFrame:CGRectMake(0, 0, 250, 44)];
+    self.navigationItem.titleView = titleImageView;
     
     self.hoursPickerView.layer.borderColor = [BLUE_COLOR CGColor];
     self.minutesPickerView.layer.borderColor = [BLUE_COLOR CGColor];
@@ -100,12 +116,31 @@
     
     for (int i = 0; i < 11; i++) {
         
-        NSString *hourString = [NSString stringWithFormat:@"%ld", year];
+        NSString *hourString = [NSString stringWithFormat:@"%ld", (long)year];
         year = year + counter;
         [self.dataSourceYears addObject:hourString];
     }
     
 }
+
+
+- (void)loadSettingsPickerView
+{
+    
+    NSInteger valueHoursPC = [self.userDefaults integerForKey:@"valueHours"];
+    NSInteger valueMinutesPC = [self.userDefaults integerForKey:@"valueMinutes"];
+    NSInteger valueDaysPC = [self.userDefaults integerForKey:@"valueDays"] - 1;
+    NSInteger valueMonthsPC = [self.userDefaults integerForKey:@"valueMonths"] - 1;
+    NSInteger valuePickerPC = [self.userDefaults integerForKey:@"valueYears"] - 1;
+    
+    [self.hoursPickerView selectRow:valueHoursPC inComponent:0 animated:NO];
+    [self.minutesPickerView selectRow:valueMinutesPC inComponent:0 animated:NO];
+    [self.daysPickerView selectRow:valueDaysPC inComponent:0 animated:NO];
+    [self.monthsPickerView selectRow:valueMonthsPC inComponent:0 animated:NO];
+    [self.yearsPickerView selectRow:valuePickerPC inComponent:0 animated:NO];
+    
+}
+
 
 
 #pragma mark - Actions
@@ -114,8 +149,97 @@
 - (IBAction)actionSendButton:(id)sender
 {
     
+    self.contactPicker = [[CNContactPickerViewController alloc] init];
+    self.contactPicker.delegate = self;
+
+    [self presentViewController:self.contactPicker animated:YES completion:nil];
+
 }
 
+
+#pragma mark - CNContactPickerDelegate
+
+
+- (void)contactPicker:(CNContactPickerViewController *)picker didSelectContact:(CNContact *)contact
+{
+    
+    NSArray *phoneNumbers = [contact phoneNumbers];
+    CNLabeledValue *number = [phoneNumbers objectAtIndex:0];
+    NSString *numberPhone = [[number value] stringValue];
+    self.recipient = @[numberPhone];
+    
+    [self sendMessage:self.recipient];
+}
+
+
+#pragma mark - MFMessageComposeViewController
+
+
+- (void)sendMessage:(NSArray *)recipients
+{
+    NSString *valuePickerViewHours = [self pickerView:self.hoursPickerView
+                                         titleForRow:[self.hoursPickerView selectedRowInComponent:0] forComponent:0];
+    
+    NSString *valuePickerViewMinutes = [self pickerView:self.minutesPickerView
+                                          titleForRow:[self.minutesPickerView selectedRowInComponent:0] forComponent:0];
+    
+    NSString *valuePickerViewDays = [self pickerView:self.daysPickerView
+                                          titleForRow:[self.daysPickerView selectedRowInComponent:0] forComponent:0];
+    
+    NSString *valuePickerViewMonths = [self pickerView:self.monthsPickerView
+                                         titleForRow:[self.monthsPickerView selectedRowInComponent:0] forComponent:0];
+    
+    NSString *valuePickerViewYears = [self pickerView:self.yearsPickerView
+                                          titleForRow:[self.yearsPickerView selectedRowInComponent:0] forComponent:0];
+
+    
+    NSDictionary *comandDictionary = @{@"hours":valuePickerViewHours,
+                                       @"minutes":valuePickerViewMinutes,
+                                       @"days":valuePickerViewDays,
+                                       @"months":valuePickerViewMonths,
+                                       @"years":valuePickerViewYears};
+    
+    NSInteger hours = [valuePickerViewHours integerValue];
+    NSInteger minutes = [valuePickerViewMinutes integerValue];
+    NSInteger days = [valuePickerViewDays integerValue];
+    NSInteger months = [valuePickerViewMonths integerValue];
+    NSInteger years = [valuePickerViewYears integerValue];
+    
+    
+    [self.userDefaults setInteger:hours forKey:@"valueHours"];
+    [self.userDefaults setInteger:minutes forKey:@"valueMinutes"];
+    [self.userDefaults setInteger:days forKey:@"valueDays"];
+    [self.userDefaults setInteger:months forKey:@"valueMonths"];
+    [self.userDefaults setInteger:years forKey:@"valueYears"];
+    [self.userDefaults synchronize];
+    
+    
+    MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString setTimeComand:comandDictionary]];
+    messageComposeViewController.messageComposeDelegate = self;
+    
+    [self dismissViewControllerAnimated:NO completion:nil];
+    [self presentViewController:messageComposeViewController animated:YES completion:nil];
+    
+}
+
+
+#pragma mark - MFMessageComposeViewControllerDelegate
+
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller
+                 didFinishWithResult:(MessageComposeResult)result
+{
+    if (result == MessageComposeResultCancelled) {
+        NSLog(@"Message cancelled");
+    }
+    else if (result == MessageComposeResultSent) {
+        NSLog(@"Message sent");
+    }
+    else {
+        NSLog(@"Message failed");
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 
 #pragma mark - UIPickerViewDataSource

@@ -7,10 +7,15 @@
 //
 
 #import "TSNameDeviceViewController.h"
-#import "TSPrefixHeader.pch"
+#import "TSPostingMessagesManager.h"
 #import "NSString+TSString.h"
+#import "TSPrefixHeader.pch"
 
-@interface TSNameDeviceViewController ()
+#import <Messages/Messages.h>
+#import <MessageUI/MFMessageComposeViewController.h>
+#import <ContactsUI/ContactsUI.h>
+
+@interface TSNameDeviceViewController () <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *nameDeviceLabel;
@@ -19,6 +24,10 @@
 @property (weak, nonatomic) IBOutlet UITextField *textFieldNameDevice;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
+@property (strong, nonatomic) NSUserDefaults *userDefaults;
+@property (strong, nonatomic) NSArray *recipient;
+@property (strong, nonatomic) CNContactPickerViewController *contactPicker;
+
 @end
 
 @implementation TSNameDeviceViewController
@@ -26,6 +35,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.userDefaults = [NSUserDefaults standardUserDefaults];
     self.textFieldNameDevice.layer.borderColor = [BLUE_COLOR CGColor];
 }
 
@@ -48,12 +58,76 @@
 - (IBAction)actionSendButton:(id)sender
 {
     
-    [NSString nameDiviceComand:self.textFieldNameDevice.text];
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:self.textFieldNameDevice.text forKey:@"nameDevice"];
-    [userDefaults synchronize];
-    [self.navigationController popToRootViewControllerAnimated:YES];
-    NSLog(@"Name %@", [NSString nameDiviceComand:self.nameDeviceLabel.text]);
+    if (![self.textFieldNameDevice.text isEqualToString:@""]) {
+        self.contactPicker = [[CNContactPickerViewController alloc] init];
+        self.contactPicker.delegate = self;
+        
+        [self presentViewController:self.contactPicker animated:YES completion:nil];
+    } else {
+        
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"You must enter a name to send the comand"
+                                                                                 message:nil
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *alertAction = [UIAlertAction actionWithTitle:@"Ok"
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:^(UIAlertAction * _Nonnull action) {
+                                                                
+                                                            }];
+        [alertController addAction:alertAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+    
+}
+
+
+#pragma mark - CNContactPickerDelegate
+
+
+- (void)contactPicker:(CNContactPickerViewController *)picker didSelectContact:(CNContact *)contact
+{
+    
+    NSArray *phoneNumbers = [contact phoneNumbers];
+    CNLabeledValue *number = [phoneNumbers objectAtIndex:0];
+    NSString *numberPhone = [[number value] stringValue];
+    self.recipient = @[numberPhone];
+    
+    [self sendMessage:self.recipient];
+}
+
+
+#pragma mark - MFMessageComposeViewController
+
+
+- (void)sendMessage:(NSArray *)recipients
+{
+    [self.userDefaults setObject:self.textFieldNameDevice.text forKey:@"nameDevice"];
+    
+    MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString nameDiviceComand:self.textFieldNameDevice.text]];
+    messageComposeViewController.messageComposeDelegate = self;
+    
+    [self dismissViewControllerAnimated:NO completion:nil];
+    [self presentViewController:messageComposeViewController animated:YES completion:nil];
+    
+}
+
+
+#pragma mark - MFMessageComposeViewControllerDelegate
+
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller
+                 didFinishWithResult:(MessageComposeResult)result
+{
+    if (result == MessageComposeResultCancelled) {
+        NSLog(@"Message cancelled");
+    }
+    else if (result == MessageComposeResultSent) {
+        NSLog(@"Message sent");
+    }
+    else {
+        NSLog(@"Message failed");
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

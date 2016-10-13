@@ -7,14 +7,15 @@
 //
 
 #import "TSTelViewController.h"
-#import "TSPrefixHeader.pch"
 #import "TSPostingMessagesManager.h"
 #import "NSString+TSString.h"
+#import "TSPrefixHeader.pch"
 
 #import <Messages/Messages.h>
 #import <MessageUI/MFMessageComposeViewController.h>
+#import <ContactsUI/ContactsUI.h>
 
-@interface TSTelViewController () <MFMessageComposeViewControllerDelegate>
+@interface TSTelViewController () <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *textField;
 @property (weak, nonatomic) IBOutlet UIButton *checkerButton;
@@ -26,6 +27,9 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
+
+@property (strong, nonatomic) CNContactPickerViewController *contactPicker;
+@property (strong, nonatomic) NSArray *recipient;
 
 @end
 
@@ -69,26 +73,15 @@
 {
     if (![self.textField.text isEqualToString:@""]) {
         
-        NSArray *recipientNumberPhone = @[self.textField.text];
+        self.contactPicker = [[CNContactPickerViewController alloc] init];
+        self.contactPicker.delegate = self;
         
-        if (self.switchCheker == YES) {
-            
-            MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipientNumberPhone bodyMessage:[NSString prefixNumberPhoneAndPin:[recipientNumberPhone objectAtIndex:0] checker:self.switchCheker]];
-            messageComposeViewController.messageComposeDelegate = self;
-            
-//            [self presentViewController:messageComposeViewController animated:YES completion:nil];
-            
-        } else {
-            
-            
-      
-        }
-        
-        NSLog(@"%@", [NSString prefixNumberPhoneAndPin:[recipientNumberPhone objectAtIndex:0] checker:self.switchCheker]);
+        [self presentViewController:self.contactPicker animated:YES completion:nil];
+
         
     } else {
         
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"You must enter a phone number to send the message"
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"You must enter a phone number to send the comand"
                                                                                  message:nil
                                                                           preferredStyle:UIAlertControllerStyleAlert];
         
@@ -102,8 +95,58 @@
         
     }
     
-    [self.navigationController popToRootViewControllerAnimated:YES];
 }
+
+
+
+#pragma mark - CNContactPickerDelegate
+
+
+- (void)contactPicker:(CNContactPickerViewController *)picker didSelectContact:(CNContact *)contact
+{
+    
+    NSArray *phoneNumbers = [contact phoneNumbers];
+    CNLabeledValue *number = [phoneNumbers objectAtIndex:0];
+    NSString *numberPhone = [[number value] stringValue];
+    self.recipient = @[numberPhone];
+    
+    [self sendMessage:self.recipient];
+}
+
+
+#pragma mark - MFMessageComposeViewController
+
+
+- (void)sendMessage:(NSArray *)recipients
+{
+    
+    MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString telComand:self.textField.text checker:self.switchCheker]];
+    messageComposeViewController.messageComposeDelegate = self;
+    
+    [self dismissViewControllerAnimated:NO completion:nil];
+    [self presentViewController:messageComposeViewController animated:YES completion:nil];
+    
+}
+
+
+#pragma mark - MFMessageComposeViewControllerDelegate
+
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller
+                 didFinishWithResult:(MessageComposeResult)result
+{
+    if (result == MessageComposeResultCancelled) {
+        NSLog(@"Message cancelled");
+    }
+    else if (result == MessageComposeResultSent) {
+        NSLog(@"Message sent");
+    }
+    else {
+        NSLog(@"Message failed");
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
@@ -173,16 +216,6 @@ replacementString:(NSString *)string
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-
-#pragma mark - MFMessageComposeViewControllerDelegate
-
-
--(void)messageComposeViewController:(MFMessageComposeViewController *)controller
-                didFinishWithResult:(MessageComposeResult)result
-{
-    
 }
 
 
