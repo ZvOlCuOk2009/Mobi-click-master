@@ -12,9 +12,10 @@
 
 + (NSString *)sosComand:(NSArray *)numberPhones checkerPosirion:(NSArray *)checkers;
 + (NSString *)telComand:(NSString *)numberPhone checker:(BOOL)checker;
-+ (NSString *)nameDiviceComand:(NSString *)nameDevice;
++ (NSString *)changeNameDiviceComand:(NSString *)newNameDevice;
 + (NSString *)setTimeComand:(NSDictionary *)dictionaryValue;
 + (NSString *)changePinComand:(NSString *)newPin;
 + (NSString *)changeLaunguageComand:(NSString *)newLaunguage;
++ (NSString *)setRingtonComand:(NSDictionary *)dictionaryValue;
 
 @end

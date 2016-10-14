@@ -8,9 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TSTableViewCell : UITableViewCell
+@interface TSTableViewCell : UITableViewCell 
+
 @property (weak, nonatomic) IBOutlet UILabel *ringtonLabel;
 @property (weak, nonatomic) IBOutlet UIButton *checkerButton;
+
+@property (strong, nonatomic) UIImage *clickImage;
+@property (strong, nonatomic) UIImage *noclickImage;
+@property (assign, nonatomic) BOOL switchCheker;
+
 - (IBAction)actionCheckerButton:(id)sender;
 
 @end

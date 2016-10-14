@@ -7,12 +7,19 @@
 //
 
 #import "TSTableViewCell.h"
+#import "TSPrefixHeader.pch"
 
 @implementation TSTableViewCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    // Initialization code
+    
+    self.checkerButton.layer.borderColor = BLUE_COLOR.CGColor;
+    
+    self.clickImage = [UIImage imageNamed:@"click"];
+    self.noclickImage = [UIImage imageNamed:@"noclick"];
+    
+    self.switchCheker = NO;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -21,6 +28,18 @@
     // Configure the view for the selected state
 }
 
-- (IBAction)actionCheckerButton:(id)sender {
+- (IBAction)actionCheckerButton:(id)sender
+{
+    
+    if (self.switchCheker == NO) {
+        [self.checkerButton setImage:self.clickImage forState:UIControlStateNormal];
+        self.switchCheker = YES;
+    } else if (self.switchCheker == YES) {
+        [self.checkerButton setImage:self.noclickImage forState:UIControlStateNormal];
+        self.switchCheker = NO;
+    }
+    
 }
+
+
 @end

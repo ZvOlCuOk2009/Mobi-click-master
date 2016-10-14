@@ -103,7 +103,7 @@
 {
     [self.userDefaults setObject:self.textFieldNameDevice.text forKey:@"nameDevice"];
     
-    MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString nameDiviceComand:self.textFieldNameDevice.text]];
+    MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString changeNameDiviceComand:self.textFieldNameDevice.text]];
     messageComposeViewController.messageComposeDelegate = self;
     
     [self dismissViewControllerAnimated:NO completion:nil];

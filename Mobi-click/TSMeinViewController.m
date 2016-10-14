@@ -36,11 +36,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *voiceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *vibraLabel;
 
-@property (strong, nonatomic) NSString *alarm;
-@property (strong, nonatomic) NSString *move;
-@property (strong, nonatomic) NSString *voice;
-@property (strong, nonatomic) NSString *vibra;
-
 @property (strong, nonatomic) NSArray *recipient;
 @property (strong, nonatomic) NSArray *comands;
 @property (strong, nonatomic) NSUserDefaults *userDefaults;
@@ -146,39 +141,44 @@
 
 - (NSArray *)configureCommand
 {
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSString *pin = [userDefaults objectForKey:@"pin"];
+    self.userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *pin = [self.userDefaults objectForKey:@"pin"];
     
     NSString *sensorSettingsMovie = [self.valuesDictionary objectForKey:@"valueMove"];
     NSString *sensorSettingsVoice = [self.valuesDictionary objectForKey:@"valueVoice"];
     NSString *sensorSettingsVibra = [self.valuesDictionary objectForKey:@"valueVibra"];
     
+    NSString *alarm = nil;
+    NSString *move = nil;
+    NSString *voice = nil;
+    NSString *vibra = nil;
+    
     if (self.switchAlarm.isOn) {
-        self.alarm = [NSString stringWithFormat:@"SET SECURITY #%@", pin];
+        alarm = [NSString stringWithFormat:@"SET SECURITY #%@", pin];
     } else {
-        self.alarm = [NSString stringWithFormat:@"RESET SECURITY #%@", pin];
+        alarm = [NSString stringWithFormat:@"RESET SECURITY #%@", pin];
     }
     
     if (self.switchMove.isOn) {
-        self.move = [NSString stringWithFormat:@"SET MOVE%@ #%@", sensorSettingsMovie, pin];
+        move = [NSString stringWithFormat:@"SET MOVE%@ #%@", sensorSettingsMovie, pin];
     } else {
-        self.move = [NSString stringWithFormat:@"RESET MOVE #%@", pin];
+        move = [NSString stringWithFormat:@"RESET MOVE #%@", pin];
     }
     
     if (self.switchVoice.isOn) {
-        self.voice = [NSString stringWithFormat:@"SET VOICE%@ #%@", sensorSettingsVoice, pin];
+        voice = [NSString stringWithFormat:@"SET VOICE%@ #%@", sensorSettingsVoice, pin];
     } else {
-        self.voice = [NSString stringWithFormat:@"RESET VOICE #%@", pin];
+        voice = [NSString stringWithFormat:@"RESET VOICE #%@", pin];
     }
     
     if (self.switchVibra.isOn) {
-        self.vibra = [NSString stringWithFormat:@"SET VIBRA%@ #%@", sensorSettingsVibra, pin];
+        vibra = [NSString stringWithFormat:@"SET VIBRA%@ #%@", sensorSettingsVibra, pin];
     } else {
-        self.vibra = [NSString stringWithFormat:@"RESET VIBRA #%@", pin];
+        vibra = [NSString stringWithFormat:@"RESET VIBRA #%@", pin];
     }
     
     
-    NSArray *comands = @[self.alarm, self.move, self.voice, self.vibra];
+    NSArray *comands = @[alarm, move, voice, vibra];
         
     return comands;
 }

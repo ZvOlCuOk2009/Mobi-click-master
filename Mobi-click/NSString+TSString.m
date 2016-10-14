@@ -64,9 +64,9 @@ static NSString *pin;
 }
 
 
-+ (NSString *)nameDiviceComand:(NSString *)nameDevice
++ (NSString *)changeNameDiviceComand:(NSString *)newNameDevice
 {
-    return [NSString stringWithFormat:@"SET NAME %@ #%@", nameDevice, pin];
+    return [NSString stringWithFormat:@"SET NAME %@ #%@", newNameDevice, pin];
 }
 
 
@@ -92,5 +92,19 @@ static NSString *pin;
 {
     return [NSString stringWithFormat:@"SET LANGUAGE %@ #%@", newLaunguage, pin];
 }
+
+
++ (NSString *)setRingtonComand:(NSDictionary *)dictionaryValue
+{
+    
+    NSString *speaker = [dictionaryValue objectForKey:@"speaker"];
+    NSString *microphone = [dictionaryValue objectForKey:@"microphone"];
+    NSString *ringtone = [dictionaryValue objectForKey:@"ringtone"];
+    NSString *determinant = [dictionaryValue objectForKey:@"determinant"];
+    
+    return [NSString stringWithFormat:@"SET AUDIO %@ %@ %@ %@ %@ #%@", speaker, microphone, determinant, ringtone, ringtone, pin];
+}
+
+
 
 @end
