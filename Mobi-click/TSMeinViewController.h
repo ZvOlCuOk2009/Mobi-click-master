@@ -7,8 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Messages/Messages.h>
+#import <MessageUI/MFMessageComposeViewController.h>
+#import <ContactsUI/ContactsUI.h>
 
-@interface TSMeinViewController : UIViewController
+@interface TSMeinViewController : UIViewController  <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
+@property (strong, nonatomic) CNContactPickerViewController *contactPicker;
+@property (strong, nonatomic) UIImageView *titleImageView;
+
+@property (strong, nonatomic) UIImage * clickImage;
+@property (strong, nonatomic) UIImage * noclickImage;
+
+@property (strong, nonatomic) NSArray *recipient;
+@property (strong, nonatomic) NSArray *comands;
+@property (strong, nonatomic) NSUserDefaults *userDefaults;
 
 @end

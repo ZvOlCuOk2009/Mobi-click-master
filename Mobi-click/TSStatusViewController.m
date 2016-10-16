@@ -10,9 +10,6 @@
 #import "TSPostingMessagesManager.h"
 #import "TSPrefixHeader.pch"
 
-#import <Messages/Messages.h>
-#import <MessageUI/MFMessageComposeViewController.h>
-#import <ContactsUI/ContactsUI.h>
 
 @interface TSStatusViewController () <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
@@ -29,7 +26,6 @@
 @property (weak, nonatomic) IBOutlet UISwitch *switchGpsAlarm;
 @property (weak, nonatomic) IBOutlet UISwitch *switchidlealarm;
 
-@property (weak, nonatomic) IBOutlet UISwitch *swichIdleAlarm;
 @property (weak, nonatomic) IBOutlet UILabel *intervalLabel;
 @property (weak, nonatomic) IBOutlet UILabel *lockLabel;
 @property (weak, nonatomic) IBOutlet UILabel *repeatLabel;
@@ -48,14 +44,15 @@
 @property (strong, nonatomic) NSString *valuePickerViewGps;
 @property (strong, nonatomic) NSString *valuePickerViewEdleAlarm;
 
-@property (strong, nonatomic) NSArray *recipient;
-@property (strong, nonatomic) NSArray *comands;
-@property (strong, nonatomic) NSUserDefaults *userDefaults;
-@property (strong, nonatomic) CNContactPickerViewController *contactPicker;
+//@property (strong, nonatomic) NSArray *recipient;
+//@property (strong, nonatomic) NSArray *comands;
+//@property (strong, nonatomic) NSUserDefaults *userDefaults;
 
 @property (assign, nonatomic) NSInteger counter;
 @property (assign, nonatomic) NSInteger counterComand;
 @property (assign, nonatomic) NSInteger regognizer;
+
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
 @end
 
@@ -66,7 +63,7 @@
     
     self.userDefaults = [NSUserDefaults standardUserDefaults];
     [self configureController];
-    [self loadSettingsPickerView];
+    
 }
 
 
@@ -74,7 +71,12 @@
 {
     [super viewWillAppear:animated];
     [self setLaunguage];
+    [self loadSettingsPickerView];
 }
+
+
+
+#pragma mark - load picker view and switch position
 
 
 - (void)loadSettingsPickerView
@@ -119,6 +121,7 @@
 
 - (void)configureController
 {
+    self.navigationItem.titleView = self.titleImageView;
     
     self.intervalPickerView.layer.borderColor = [BLUE_COLOR CGColor];
     self.alarmWiedPickerView.layer.borderColor = [BLUE_COLOR CGColor];

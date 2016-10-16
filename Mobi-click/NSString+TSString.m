@@ -106,5 +106,10 @@ static NSString *pin;
 }
 
 
++ (NSString *)setHoldAlarmComand:(NSDictionary *)dictionaryValue checker:(BOOL)checker
+{
+    return [NSString stringWithFormat:@""];
+}
+
 
 @end

@@ -11,9 +11,6 @@
 #import "NSString+TSString.h"
 #import "TSPrefixHeader.pch"
 
-#import <Messages/Messages.h>
-#import <MessageUI/MFMessageComposeViewController.h>
-#import <ContactsUI/ContactsUI.h>
 
 @interface TSTelViewController () <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
@@ -21,15 +18,11 @@
 @property (weak, nonatomic) IBOutlet UIButton *checkerButton;
 @property (assign, nonatomic) BOOL switchCheker;
 
-@property (strong, nonatomic) UIImage * clickImage;
-@property (strong, nonatomic) UIImage * noclickImage;
-
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
 
-@property (strong, nonatomic) CNContactPickerViewController *contactPicker;
-@property (strong, nonatomic) NSArray *recipient;
+//@property (strong, nonatomic) NSArray *recipient;
 
 @end
 
@@ -37,8 +30,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
+
     
     self.textField.layer.cornerRadius = 8.0f;
     self.textField.layer.masksToBounds = YES;
@@ -48,9 +40,34 @@
     self.checkerButton.layer.borderColor = [BLUE_COLOR CGColor];
     
     self.switchCheker = NO;
+}
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setLauguage];
     
-    self.clickImage = [UIImage imageNamed:@"click"];
-    self.noclickImage = [UIImage imageNamed:@"noclick"];
+}
+
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    if (IS_IPHONE_4) {
+        [self.scrollView setContentSize:CGSizeMake(320, 436)];
+        self.scrollView.frame = CGRectMake(0, 64, 320, 436);
+    } else if (IS_IPHONE_5) {
+        [self.scrollView setContentSize:CGSizeMake(320, 524)];
+        self.scrollView.frame = CGRectMake(0, 64, 320, 524);
+    } else if (IS_IPHONE_6) {
+        [self.scrollView setContentSize:CGSizeMake(320, 603)];
+        self.scrollView.frame = CGRectMake(0, 64, 375, 603);
+    } else if (IS_IPHONE_6_PLUS) {
+        [self.scrollView setContentSize:CGSizeMake(320, 672)];
+        self.scrollView.frame = CGRectMake(0, 64, 414, 672);
+    }
 }
 
 
@@ -59,12 +76,14 @@
 
 - (IBAction)actionChecker:(id)sender
 {
-    if (self.switchCheker == NO) {
-        [self.checkerButton setImage:self.clickImage forState:UIControlStateNormal];
-        self.switchCheker = YES;
-    } else if (self.switchCheker == YES) {
-        [self.checkerButton setImage:self.noclickImage forState:UIControlStateNormal];
-        self.switchCheker = NO;
+    if (![self.textField.text isEqualToString:@""]) {
+        if (self.switchCheker == NO) {
+            [self.checkerButton setImage:self.clickImage forState:UIControlStateNormal];
+            self.switchCheker = YES;
+        } else if (self.switchCheker == YES) {
+            [self.checkerButton setImage:self.noclickImage forState:UIControlStateNormal];
+            self.switchCheker = NO;
+        }
     }
 }
 
@@ -172,50 +191,9 @@ replacementString:(NSString *)string
 }
 
 
-#pragma mark - Keyboard notification
-
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self setLauguage];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
-}
-
-
-- (void)keyboardDidShow:(NSNotification *)notification
-{
-    NSDictionary *info = [notification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
-    self.scrollView.contentInset = contentInsets;
-    self.scrollView.scrollIndicatorInsets = contentInsets;
-    
-    CGRect aRect = self.view.frame;
-    aRect.size.height -= kbSize.height;
-    if (!CGRectContainsPoint(aRect, self.view.frame.origin) ) {
-        CGPoint scrollPoint = CGPointMake(0.0, self.view.frame.origin.y - kbSize.height);
-        [self.scrollView setContentOffset:scrollPoint animated:YES];
-    }
-    
-}
-
-
-- (void)keyboardDidHide:(NSNotification *)notification
-{
-    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
-    self.scrollView.contentInset = contentInsets;
-    self.scrollView.scrollIndicatorInsets = contentInsets;
-    
-}
-
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
 }
 
 

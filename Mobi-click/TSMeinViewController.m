@@ -12,11 +12,7 @@
 #import "TSPostingMessagesManager.h"
 #import "TSSensorViewController.h"
 
-#import <Messages/Messages.h>
-#import <MessageUI/MFMessageComposeViewController.h>
-#import <ContactsUI/ContactsUI.h>
-
-@interface TSMeinViewController () <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
+@interface TSMeinViewController ()
 
 @property (weak, nonatomic) IBOutlet UIButton *deviceButton;
 @property (weak, nonatomic) IBOutlet UIButton *sosButton;
@@ -36,14 +32,15 @@
 @property (weak, nonatomic) IBOutlet UILabel *voiceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *vibraLabel;
 
-@property (strong, nonatomic) NSArray *recipient;
-@property (strong, nonatomic) NSArray *comands;
-@property (strong, nonatomic) NSUserDefaults *userDefaults;
+//@property (strong, nonatomic) NSArray *recipient;
+//@property (strong, nonatomic) NSArray *comands;
+//@property (strong, nonatomic) NSUserDefaults *userDefaults;
 @property (strong, nonatomic) NSDictionary *valuesDictionary;
-@property (strong, nonatomic) CNContactPickerViewController *contactPicker;
 
 @property (assign, nonatomic) NSInteger counter;
 @property (assign, nonatomic) NSInteger counterComand;
+
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
 @end
 
@@ -82,13 +79,37 @@
                                                  name:ValuesPickerViewNotification
                                                object:nil];
     
-    NSLog(@"movie %@ self %@ vibra %@", [self.valuesDictionary objectForKey:@"valueMove"], [self.valuesDictionary objectForKey:@"valueVoice"], [self.valuesDictionary objectForKey:@"valueVibra"]);
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+
+    
 }
 
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [self savePositionsSwitchs];
+}
+
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    if (IS_IPHONE_4) {
+        [self.scrollView setContentSize:CGSizeMake(320, 603)];
+        self.scrollView.frame = CGRectMake(0, 64, 320, 436);
+    } else if (IS_IPHONE_5) {
+        [self.scrollView setContentSize:CGSizeMake(320, 603)];
+        self.scrollView.frame = CGRectMake(0, 64, 320, 524);
+    } else if (IS_IPHONE_6) {
+        [self.scrollView setContentSize:CGSizeMake(320, 603)];
+        self.scrollView.frame = CGRectMake(0, 64, 375, 623);
+    } else if (IS_IPHONE_6_PLUS) {
+        [self.scrollView setContentSize:CGSizeMake(320, 672)];
+        self.scrollView.frame = CGRectMake(0, 64, 414, 692);
+    }
 }
 
 
@@ -117,9 +138,9 @@
 - (void)configureController
 {
     
-    UIImageView *titleImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
-    [titleImageView setFrame:CGRectMake(0, 0, 250, 44)];
-    self.navigationItem.titleView = titleImageView;
+    self.titleImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
+    [self.titleImageView setFrame:CGRectMake(0, 0, 250, 44)];
+    self.navigationItem.titleView = self.titleImageView;
     
     self.deviceButton.layer.borderColor = BLUE_COLOR.CGColor;
     self.sosButton.layer.borderColor = BLUE_COLOR.CGColor;
@@ -135,7 +156,9 @@
     [self.switchMove setOn:move animated:YES];
     [self.switchVoice setOn:voice animated:YES];
     [self.switchVibra setOn:vibra animated:YES];
-    
+
+    self.clickImage = [UIImage imageNamed:@"click"];
+    self.noclickImage = [UIImage imageNamed:@"noclick"];
 }
 
 
@@ -264,6 +287,38 @@
 }
 
 
+
+#pragma mark - Keyboard notification
+
+
+- (void)keyboardDidShow:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+    self.scrollView.contentInset = contentInsets;
+    self.scrollView.scrollIndicatorInsets = contentInsets;
+    
+    CGRect aRect = self.view.frame;
+    aRect.size.height -= kbSize.height;
+    if (!CGRectContainsPoint(aRect, self.view.frame.origin) ) {
+        CGPoint scrollPoint = CGPointMake(0.0, self.view.frame.origin.y - kbSize.height);
+        [self.scrollView setContentOffset:scrollPoint animated:YES];
+    }
+    
+}
+
+
+- (void)keyboardDidHide:(NSNotification *)notification
+{
+    
+    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    self.scrollView.contentInset = contentInsets;
+    self.scrollView.scrollIndicatorInsets = contentInsets;
+    
+}
+
+
 #pragma mark - methods set launguage
 
 
@@ -314,7 +369,7 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
 }
 
 

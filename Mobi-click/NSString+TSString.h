@@ -17,5 +17,6 @@
 + (NSString *)changePinComand:(NSString *)newPin;
 + (NSString *)changeLaunguageComand:(NSString *)newLaunguage;
 + (NSString *)setRingtonComand:(NSDictionary *)dictionaryValue;
++ (NSString *)setHoldAlarmComand:(NSDictionary *)dictionaryValue checker:(BOOL)checker;
 
 @end

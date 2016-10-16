@@ -11,9 +11,9 @@
 #import "NSString+TSString.h"
 #import "TSPrefixHeader.pch"
 
-#import <Messages/Messages.h>
-#import <MessageUI/MFMessageComposeViewController.h>
-#import <ContactsUI/ContactsUI.h>
+//#import <Messages/Messages.h>
+//#import <MessageUI/MFMessageComposeViewController.h>
+//#import <ContactsUI/ContactsUI.h>
 
 @interface TSTimeDateViewController () <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
@@ -34,9 +34,14 @@
 @property (strong, nonatomic) NSMutableArray *dataSourceMonths;
 @property (strong, nonatomic) NSMutableArray *dataSourceYears;
 
-@property (strong, nonatomic) NSUserDefaults *userDefaults;
-@property (strong, nonatomic) CNContactPickerViewController *contactPicker; 
-@property (strong, nonatomic) NSArray *recipient;
+//@property (strong, nonatomic) NSUserDefaults *userDefaults;
+//@property (strong, nonatomic) NSArray *recipient;
+
+@property (strong, nonatomic) NSString *valuePickerViewHours;
+@property (strong, nonatomic) NSString *valuePickerViewMinutes;
+@property (strong, nonatomic) NSString *valuePickerViewDays;
+@property (strong, nonatomic) NSString *valuePickerViewMonths;
+@property (strong, nonatomic) NSString *valuePickerViewYears;
 
 @end
 
@@ -45,6 +50,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.userDefaults = [NSUserDefaults standardUserDefaults];
     [self configureController];
 }
 
@@ -59,8 +65,6 @@
 
 - (void)configureController
 {
-    
-    self.userDefaults = [NSUserDefaults standardUserDefaults];
     
     UIImageView *titleImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     [titleImageView setFrame:CGRectMake(0, 0, 250, 44)];
@@ -124,6 +128,9 @@
 }
 
 
+#pragma mark - load picker view position
+
+
 - (void)loadSettingsPickerView
 {
     
@@ -138,6 +145,30 @@
     [self.daysPickerView selectRow:valueDaysPC inComponent:0 animated:NO];
     [self.monthsPickerView selectRow:valueMonthsPC inComponent:0 animated:NO];
     [self.yearsPickerView selectRow:valuePickerPC inComponent:0 animated:NO];
+    
+}
+
+
+#pragma mark - save picker view position
+
+
+
+- (void)saveSettingsPickerView
+{
+    
+    NSInteger hours = [self.valuePickerViewHours integerValue];
+    NSInteger minutes = [self.valuePickerViewMinutes integerValue];
+    NSInteger days = [self.valuePickerViewDays integerValue];
+    NSInteger months = [self.valuePickerViewMonths integerValue];
+    NSInteger years = [self.valuePickerViewYears integerValue];
+    
+    
+    [self.userDefaults setInteger:hours forKey:@"valueHours"];
+    [self.userDefaults setInteger:minutes forKey:@"valueMinutes"];
+    [self.userDefaults setInteger:days forKey:@"valueDays"];
+    [self.userDefaults setInteger:months forKey:@"valueMonths"];
+    [self.userDefaults setInteger:years forKey:@"valueYears"];
+    [self.userDefaults synchronize];
     
 }
 
@@ -177,41 +208,28 @@
 
 - (void)sendMessage:(NSArray *)recipients
 {
-    NSString *valuePickerViewHours = [self pickerView:self.hoursPickerView
+    
+    self.valuePickerViewHours = [self pickerView:self.hoursPickerView
                                          titleForRow:[self.hoursPickerView selectedRowInComponent:0] forComponent:0];
     
-    NSString *valuePickerViewMinutes = [self pickerView:self.minutesPickerView
+    self.valuePickerViewMinutes = [self pickerView:self.minutesPickerView
                                           titleForRow:[self.minutesPickerView selectedRowInComponent:0] forComponent:0];
     
-    NSString *valuePickerViewDays = [self pickerView:self.daysPickerView
+    self.valuePickerViewDays = [self pickerView:self.daysPickerView
                                           titleForRow:[self.daysPickerView selectedRowInComponent:0] forComponent:0];
     
-    NSString *valuePickerViewMonths = [self pickerView:self.monthsPickerView
+    self.valuePickerViewMonths = [self pickerView:self.monthsPickerView
                                          titleForRow:[self.monthsPickerView selectedRowInComponent:0] forComponent:0];
     
-    NSString *valuePickerViewYears = [self pickerView:self.yearsPickerView
+    self.valuePickerViewYears = [self pickerView:self.yearsPickerView
                                           titleForRow:[self.yearsPickerView selectedRowInComponent:0] forComponent:0];
 
     
-    NSDictionary *comandDictionary = @{@"hours":valuePickerViewHours,
-                                       @"minutes":valuePickerViewMinutes,
-                                       @"days":valuePickerViewDays,
-                                       @"months":valuePickerViewMonths,
-                                       @"years":valuePickerViewYears};
-    
-    NSInteger hours = [valuePickerViewHours integerValue];
-    NSInteger minutes = [valuePickerViewMinutes integerValue];
-    NSInteger days = [valuePickerViewDays integerValue];
-    NSInteger months = [valuePickerViewMonths integerValue];
-    NSInteger years = [valuePickerViewYears integerValue];
-    
-    
-    [self.userDefaults setInteger:hours forKey:@"valueHours"];
-    [self.userDefaults setInteger:minutes forKey:@"valueMinutes"];
-    [self.userDefaults setInteger:days forKey:@"valueDays"];
-    [self.userDefaults setInteger:months forKey:@"valueMonths"];
-    [self.userDefaults setInteger:years forKey:@"valueYears"];
-    [self.userDefaults synchronize];
+    NSDictionary *comandDictionary = @{@"hours":self.valuePickerViewHours,
+                                       @"minutes":self.valuePickerViewMinutes,
+                                       @"days":self.valuePickerViewDays,
+                                       @"months":self.valuePickerViewMonths,
+                                       @"years":self.valuePickerViewYears};
     
     
     MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString setTimeComand:comandDictionary]];
@@ -353,17 +371,9 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

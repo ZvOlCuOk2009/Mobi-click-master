@@ -11,10 +11,6 @@
 #import "NSString+TSString.h"
 #import "TSPrefixHeader.pch"
 
-#import <Messages/Messages.h>
-#import <MessageUI/MFMessageComposeViewController.h>
-#import <ContactsUI/ContactsUI.h>
-
 @interface TSNameDeviceViewController () <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
@@ -24,9 +20,8 @@
 @property (weak, nonatomic) IBOutlet UITextField *textFieldNameDevice;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
-@property (strong, nonatomic) NSUserDefaults *userDefaults;
-@property (strong, nonatomic) NSArray *recipient;
-@property (strong, nonatomic) CNContactPickerViewController *contactPicker;
+//@property (strong, nonatomic) NSUserDefaults *userDefaults;
+//@property (strong, nonatomic) NSArray *recipient;
 
 @end
 
@@ -46,9 +41,26 @@
     
     [self setLauguage];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+}
+
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+    if (IS_IPHONE_4) {
+        [self.scrollView setContentSize:CGSizeMake(320, 436)];
+        self.scrollView.frame = CGRectMake(0, 64, 320, 436);
+    } else if (IS_IPHONE_5) {
+        [self.scrollView setContentSize:CGSizeMake(320, 524)];
+        self.scrollView.frame = CGRectMake(0, 64, 320, 524);
+    } else if (IS_IPHONE_6) {
+        [self.scrollView setContentSize:CGSizeMake(320, 603)];
+        self.scrollView.frame = CGRectMake(0, 64, 375, 603);
+    } else if (IS_IPHONE_6_PLUS) {
+        [self.scrollView setContentSize:CGSizeMake(320, 672)];
+        self.scrollView.frame = CGRectMake(0, 64, 414, 672);
+    }
 }
 
 
@@ -131,6 +143,9 @@
 }
 
 
+#pragma mark - methods set launguage
+
+
 - (void)setLauguage
 {
     NSString *language = [[NSUserDefaults standardUserDefaults] objectForKey:@"language"];
@@ -159,57 +174,11 @@
 }
 
 
-#pragma mark - Keyboard notification
-
-
-- (void)keyboardDidShow:(NSNotification *)notification
-{
-    NSDictionary *info = [notification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
-    self.scrollView.contentInset = contentInsets;
-    self.scrollView.scrollIndicatorInsets = contentInsets;
-    
-    CGRect aRect = self.view.frame;
-    aRect.size.height -= kbSize.height;
-    if (!CGRectContainsPoint(aRect, self.view.frame.origin) ) {
-        CGPoint scrollPoint = CGPointMake(0.0, self.view.frame.origin.y - kbSize.height);
-        [self.scrollView setContentOffset:scrollPoint animated:YES];
-    }
-    
-}
-
-
-- (void)keyboardDidHide:(NSNotification *)notification
-{
-    
-    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
-    self.scrollView.contentInset = contentInsets;
-    self.scrollView.scrollIndicatorInsets = contentInsets;
-    
-}
-
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
 }
 
 
--(void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -12,9 +12,9 @@
 #import "NSString+TSString.h"
 #import "TSPrefixHeader.pch"
 
-#import <Messages/Messages.h>
-#import <MessageUI/MFMessageComposeViewController.h>
-#import <ContactsUI/ContactsUI.h>
+//#import <Messages/Messages.h>
+//#import <MessageUI/MFMessageComposeViewController.h>
+//#import <ContactsUI/ContactsUI.h>
 
 @interface TSAudioViewController () <UITableViewDataSource, UITableViewDelegate, MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
@@ -37,10 +37,13 @@
 @property (strong, nonatomic) NSMutableArray *dataSourceSignalVolume;
 @property (strong, nonatomic) NSArray *namesRingtons;
 
-@property (strong, nonatomic) NSArray *recipient;
-@property (strong, nonatomic) NSUserDefaults *userDefaults;
+//@property (strong, nonatomic) NSArray *recipient;
+//@property (strong, nonatomic) NSUserDefaults *userDefaults;
 @property (strong, nonatomic) NSDictionary *valuesDictionary;
-@property (strong, nonatomic) CNContactPickerViewController *contactPicker;
+
+@property (strong, nonatomic) NSString *valuePickerViewLoudspeacker;
+@property (strong, nonatomic) NSString *valuePickerViewMicrophone;
+@property (strong, nonatomic) NSString *valuePickerViewRingtones;
 
 @property (assign, nonatomic) NSInteger determinantPressedButton;
 @property (assign, nonatomic) BOOL switchCheker;
@@ -67,7 +70,26 @@
 {
     [super viewWillAppear:animated];
     [self setLaunguage];
+    [self loadSettingsPickerView];
 }
+
+
+#pragma mark - load picker view position
+
+
+- (void)loadSettingsPickerView
+{
+    
+    NSInteger valueLoudspeackerlPC = [self.userDefaults integerForKey:@"valueLoudspeacker"];
+    NSInteger valueMicrophonePC = [self.userDefaults integerForKey:@"valueMicrophone"];
+    NSInteger valueRingtonesPC = [self.userDefaults integerForKey:@"valueRingtones"];
+    
+    [self.loudspeackerPickerView selectRow:valueLoudspeackerlPC inComponent:0 animated:NO];
+    [self.microphonePickerView selectRow:valueMicrophonePC inComponent:0 animated:NO];
+    [self.ringtonesPickerView selectRow:valueRingtonesPC  inComponent:0 animated:NO];
+    
+}
+
 
 
 #pragma mark - Configure contrioller
@@ -146,6 +168,24 @@
 }
 
 
+#pragma mark - save picker view position
+
+
+- (void)savePickerViewPositionCommand
+{
+    
+    NSInteger loudspeacker = [self.valuePickerViewLoudspeacker integerValue];
+    NSInteger microphone = [self.valuePickerViewMicrophone integerValue];
+    NSInteger ringtones = [self.valuePickerViewRingtones integerValue];
+    
+    [self.userDefaults setInteger:loudspeacker forKey:@"valueLoudspeacker"];
+    [self.userDefaults setInteger:microphone forKey:@"valueMicrophone"];
+    [self.userDefaults setInteger:ringtones forKey:@"valueRingtones"];
+    [self.userDefaults synchronize];
+    
+}
+
+
 #pragma mark - Actions
 
 
@@ -191,7 +231,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return self.namesRingtons.count;
 }
 
 
@@ -243,20 +283,20 @@
 - (void)sendMessage:(NSArray *)recipients
 {
 
-    NSString *valuePickerViewLoudspeacker = [self pickerView:self.loudspeackerPickerView
+    self.valuePickerViewLoudspeacker = [self pickerView:self.loudspeackerPickerView
                                                  titleForRow:[self.loudspeackerPickerView selectedRowInComponent:0] forComponent:0];
     
-    NSString *valuePickerViewMicrophone = [self pickerView:self.microphonePickerView
+    self.valuePickerViewMicrophone = [self pickerView:self.microphonePickerView
                                                titleForRow:[self.microphonePickerView selectedRowInComponent:0] forComponent:0];
     
-    NSString *valuePickerViewRingtones = [self pickerView:self.ringtonesPickerView
+    self.valuePickerViewRingtones = [self pickerView:self.ringtonesPickerView
                                               titleForRow:[self.ringtonesPickerView selectedRowInComponent:0] forComponent:0];
     
     NSString *determinantPressedButton = [NSString stringWithFormat:@"%ld", (long)self.determinantPressedButton];
     
-    NSDictionary *dictionaryValue = @{@"speaker":valuePickerViewLoudspeacker,
-                                      @"microphone":valuePickerViewMicrophone,
-                                      @"ringtone":valuePickerViewRingtones,
+    NSDictionary *dictionaryValue = @{@"speaker":self.valuePickerViewLoudspeacker,
+                                      @"microphone":self.valuePickerViewMicrophone,
+                                      @"ringtone":self.valuePickerViewRingtones,
                                       @"determinant":determinantPressedButton};
     
     MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString setRingtonComand:dictionaryValue]];
@@ -264,6 +304,7 @@
     
     [self dismissViewControllerAnimated:NO completion:nil];
     [self presentViewController:messageComposeViewController animated:YES completion:nil];
+    [self savePickerViewPositionCommand];
     
 }
 

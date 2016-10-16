@@ -11,9 +11,6 @@
 #import "NSString+TSString.h"
 #import "TSPrefixHeader.pch"
 
-#import <Messages/Messages.h>
-#import <MessageUI/MFMessageComposeViewController.h>
-#import <ContactsUI/ContactsUI.h>
 
 @interface TSLaunguageViewController () <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
@@ -26,14 +23,13 @@
 @property (weak, nonatomic) IBOutlet UILabel *displayOldPinLabel;
 @property (strong, nonatomic) NSString *launguage;
 
-@property (strong, nonatomic) NSArray *recipient;
-@property (strong, nonatomic) CNContactPickerViewController *contactPicker;
+//@property (strong, nonatomic) NSArray *recipient;
 
 @property (weak, nonatomic) IBOutlet UITextField *textFieldNewPin;
 
 @property (strong, nonatomic) NSArray *dataSource;
-@property (strong, nonatomic) NSArray *comands;
-@property (strong, nonatomic) NSUserDefaults *userDefaults;
+//@property (strong, nonatomic) NSArray *comands;
+//@property (strong, nonatomic) NSUserDefaults *userDefaults;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
 @property (assign, nonatomic) NSInteger counter;
@@ -46,13 +42,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.dataSource = @[@"English", @"German"];
+    
     self.userDefaults = [NSUserDefaults standardUserDefaults];
     
-    self.launguagePickerView.layer.borderColor = [BLUE_COLOR CGColor];
-    self.textFieldNewPin.layer.borderColor = [BLUE_COLOR CGColor];
-    self.displayOldPinLabel.layer.borderColor = [BLUE_COLOR CGColor];
-    
+    [self configureController];
     [self setPinToLabel];
 }
 
@@ -71,10 +64,16 @@
     
     [self.launguagePickerView selectRow:row inComponent:0 animated:NO];
     
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+}
+
+
+- (void)configureController
+{
+    self.dataSource = @[@"English", @"German"];
+    self.launguagePickerView.layer.borderColor = [BLUE_COLOR CGColor];
+    self.textFieldNewPin.layer.borderColor = [BLUE_COLOR CGColor];
+    self.displayOldPinLabel.layer.borderColor = [BLUE_COLOR CGColor];
+    self.navigationItem.titleView = self.titleImageView;
 }
 
 
@@ -305,36 +304,6 @@
 }
 
 
-#pragma mark - Keyboard notification
-
-
-- (void)keyboardDidShow:(NSNotification *)notification
-{
-    NSDictionary *info = [notification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
-    self.scrollView.contentInset = contentInsets;
-    self.scrollView.scrollIndicatorInsets = contentInsets;
-    
-    CGRect aRect = self.view.frame;
-    aRect.size.height -= kbSize.height;
-    if (!CGRectContainsPoint(aRect, self.view.frame.origin) ) {
-        CGPoint scrollPoint = CGPointMake(0.0, self.view.frame.origin.y - kbSize.height);
-        [self.scrollView setContentOffset:scrollPoint animated:YES];
-    }
-    
-}
-
-
-- (void)keyboardDidHide:(NSNotification *)notification
-{
-    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
-    self.scrollView.contentInset = contentInsets;
-    self.scrollView.scrollIndicatorInsets = contentInsets;
-    
-}
-
-
 #pragma mark - UIAlertController
 
 
@@ -358,24 +327,9 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
 }
 
 
--(void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

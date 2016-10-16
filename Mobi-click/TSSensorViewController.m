@@ -23,7 +23,7 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 @property (weak, nonatomic) IBOutlet UILabel *vibraLabel;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
 
-@property (strong, nonatomic) NSUserDefaults *userDefaults;
+//@property (strong, nonatomic) NSUserDefaults *userDefaults;
 
 @property (strong, nonatomic) NSArray *dataSource;
 
@@ -33,7 +33,7 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
     
     [self configureController];
 }
@@ -49,7 +49,7 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 
 - (void)configureController
 {
-    self.userDefaults = [NSUserDefaults standardUserDefaults];
+//    self.userDefaults = [NSUserDefaults standardUserDefaults];
     
     self.dataSource = @[@"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"10"];
     
@@ -182,20 +182,9 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
 }
 
 
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

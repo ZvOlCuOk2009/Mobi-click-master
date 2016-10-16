@@ -10,6 +10,6 @@
 
 extern NSString *const ValuesPickerViewNotification;
 
-@interface TSSensorViewController : UIViewController
+@interface TSSensorViewController : TSMeinViewController
 
 @end
