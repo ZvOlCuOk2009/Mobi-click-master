@@ -49,7 +49,6 @@
 //@property (strong, nonatomic) NSUserDefaults *userDefaults;
 
 @property (assign, nonatomic) NSInteger counter;
-@property (assign, nonatomic) NSInteger counterComand;
 @property (assign, nonatomic) NSInteger regognizer;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
@@ -269,6 +268,7 @@
 
 - (IBAction)ationSendButton:(id)sender
 {
+    
     self.contactPicker = [[CNContactPickerViewController alloc] init];
     self.contactPicker.delegate = self;
     

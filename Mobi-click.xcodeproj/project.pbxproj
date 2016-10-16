@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		FD9411121DAC21D9005291E0 /* ContactsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD9411111DAC21D9005291E0 /* ContactsUI.framework */; };
+		FDB205661DB3C68E00478A88 /* TSGPSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB205651DB3C68E00478A88 /* TSGPSViewController.m */; };
+		FDB205691DB4302B00478A88 /* TSExtraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB205681DB4302B00478A88 /* TSExtraViewController.m */; };
 		FDE38C511DAAF7C400D408F2 /* TSPostingMessagesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE38C501DAAF7C400D408F2 /* TSPostingMessagesManager.m */; };
 		FDE38C591DAAFB8300D408F2 /* NSString+TSString.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE38C581DAAFB8300D408F2 /* NSString+TSString.m */; };
 		FDE94CFE1DA7A7E1006C2207 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE94CFD1DA7A7E1006C2207 /* main.m */; };
@@ -52,6 +54,10 @@
 /* Begin PBXFileReference section */
 		FD94110F1DAC21AA005291E0 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
 		FD9411111DAC21D9005291E0 /* ContactsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ContactsUI.framework; path = System/Library/Frameworks/ContactsUI.framework; sourceTree = SDKROOT; };
+		FDB205641DB3C68D00478A88 /* TSGPSViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSGPSViewController.h; sourceTree = "<group>"; };
+		FDB205651DB3C68E00478A88 /* TSGPSViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSGPSViewController.m; sourceTree = "<group>"; };
+		FDB205671DB4302B00478A88 /* TSExtraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSExtraViewController.h; sourceTree = "<group>"; };
+		FDB205681DB4302B00478A88 /* TSExtraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSExtraViewController.m; sourceTree = "<group>"; };
 		FDE38C4F1DAAF7C400D408F2 /* TSPostingMessagesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSPostingMessagesManager.h; sourceTree = "<group>"; };
 		FDE38C501DAAF7C400D408F2 /* TSPostingMessagesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSPostingMessagesManager.m; sourceTree = "<group>"; };
 		FDE38C571DAAFB8300D408F2 /* NSString+TSString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+TSString.h"; sourceTree = "<group>"; };
@@ -146,10 +152,14 @@
 				FDE94D461DA826F1006C2207 /* TSTimeDateViewController.m */,
 				FDE94D481DA82A92006C2207 /* TSStatusViewController.h */,
 				FDE94D491DA82A92006C2207 /* TSStatusViewController.m */,
+				FDB205641DB3C68D00478A88 /* TSGPSViewController.h */,
+				FDB205651DB3C68E00478A88 /* TSGPSViewController.m */,
 				FDE94D4B1DA82AAF006C2207 /* TSAudioViewController.h */,
 				FDE94D4C1DA82AAF006C2207 /* TSAudioViewController.m */,
 				FDE94D4E1DA82AFE006C2207 /* TSHoldAlarmViewController.h */,
 				FDE94D4F1DA82AFF006C2207 /* TSHoldAlarmViewController.m */,
+				FDB205671DB4302B00478A88 /* TSExtraViewController.h */,
+				FDB205681DB4302B00478A88 /* TSExtraViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -414,6 +424,8 @@
 				FDE38C511DAAF7C400D408F2 /* TSPostingMessagesManager.m in Sources */,
 				FDE94CFE1DA7A7E1006C2207 /* main.m in Sources */,
 				FDE94D3B1DA7EFDF006C2207 /* TSTelViewController.m in Sources */,
+				FDB205661DB3C68E00478A88 /* TSGPSViewController.m in Sources */,
+				FDB205691DB4302B00478A88 /* TSExtraViewController.m in Sources */,
 				FDE38C591DAAFB8300D408F2 /* NSString+TSString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

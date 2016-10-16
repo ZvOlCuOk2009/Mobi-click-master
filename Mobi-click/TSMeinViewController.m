@@ -38,7 +38,7 @@
 @property (strong, nonatomic) NSDictionary *valuesDictionary;
 
 @property (assign, nonatomic) NSInteger counter;
-@property (assign, nonatomic) NSInteger counterComand;
+//@property (assign, nonatomic) NSInteger counterComand;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
@@ -83,7 +83,6 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
 
-    
 }
 
 
@@ -217,10 +216,12 @@
     self.contactPicker.delegate = self;
     
     [self presentViewController:self.contactPicker animated:YES completion:nil];
-  
+    
     self.counter = 0;
     self.counterComand = 0;
+    
 }
+
 
 
 #pragma mark - CNContactPickerDelegate

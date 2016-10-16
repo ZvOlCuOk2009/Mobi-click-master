@@ -33,7 +33,7 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
 @property (assign, nonatomic) NSInteger counter;
-@property (assign, nonatomic) NSInteger counterComand;
+//@property (assign, nonatomic) NSInteger counterComand;
 
 @end
 

@@ -129,12 +129,8 @@
 }
 
 
-- (NSArray *)configureComand
+- (NSArray *)configureCommand
 {
-    NSString *pin = [self.userDefaults objectForKey:@"pin"];
-    
-    NSString *holdAlarmOne = nil;
-    NSString *holdAlarmTwo = nil;
     
     NSMutableArray *comands = [NSMutableArray array];
     
@@ -205,64 +201,65 @@
         }
     }
     
-    // top comand
+    NSArray *arrayPostionPvTop = @[valueFromMinPickerViewOne, valueFromHourPickerViewOne,
+                                   valueToMinPickerViewOne, valueToHourPickerViewOne];
     
-    if (self.holdAlarmSwitchOne.isOn) {
-        
-        NSString *intermediateString = [NSString stringWithFormat:@"​SET HOLDALARM %@ %@ %@ %@ X #%@",valueFromMinPickerViewOne, valueFromHourPickerViewOne, valueToMinPickerViewOne, valueToHourPickerViewOne, pin];
-        
-        
-        if ([arraySelectedDaysTop count] > 0) {
-            
-            NSMutableString *concatenateStringTop = [NSMutableString string];
-            
-            for (int i = 0; i < [arraySelectedDaysTop count]; i++) {
-                NSString *slectDay = [arraySelectedDaysTop objectAtIndex:i];
-                [concatenateStringTop appendString:[NSString stringWithFormat:@"%@ ", slectDay]];
-            }
-            
-            NSArray *components = [intermediateString componentsSeparatedByString:@" "];
-            holdAlarmOne = [NSString stringWithFormat:@"%@ %@ %@ %@ %@ %@ %@%@", [components objectAtIndex:0], [components objectAtIndex:1], [components objectAtIndex:2], [components objectAtIndex:3], [components objectAtIndex:4], [components objectAtIndex:5], concatenateStringTop, [components objectAtIndex:7]];
-        }
-        [comands addObject:holdAlarmOne];
-        NSLog(@"%@", holdAlarmOne);
-        
-    } else {
-        holdAlarmOne = [NSString stringWithFormat:@"RESET HOLDALARM #%@", pin];
-        [comands addObject:holdAlarmOne];
-    }
+    NSArray *arrayPostionPvBottom = @[valueFromMinPickerViewTwo, valueFromHourPickerViewTwo,
+                                   valueToMinPickerViewTwo, valueToHourPickerViewTwo];
     
-    //bottom comand concatenate
+    NSString *commandStringOne = [self generationCommandString:self.holdAlarmSwitchOne.isOn
+                                                 pvPosition:arrayPostionPvTop selectDay:arraySelectedDaysTop];
     
-    if (self.holdAlarmSwitchTwo.isOn)
-    {
-        NSString *intermediateString = [NSString stringWithFormat:@"​SET HOLDALARM %@ %@ %@ %@ X #%@",valueFromMinPickerViewTwo, valueFromHourPickerViewTwo, valueToMinPickerViewTwo, valueToHourPickerViewTwo, pin];
-        
-        
-        if ([arraySelectedDaysBottom count] > 0) {
-            
-            NSMutableString *concatenateStringBottom = [NSMutableString string];
-            
-            for (int i = 0; i < [arraySelectedDaysBottom count]; i++) {
-                NSString *slectDay = [arraySelectedDaysBottom objectAtIndex:i];
-                [concatenateStringBottom appendString:[NSString stringWithFormat:@"%@ ", slectDay]];
-            }
-            
-            NSArray *components = [intermediateString componentsSeparatedByString:@" "];
-            holdAlarmTwo = [NSString stringWithFormat:@"%@ %@ %@ %@ %@ %@ %@%@", [components objectAtIndex:0], [components objectAtIndex:1], [components objectAtIndex:2], [components objectAtIndex:3], [components objectAtIndex:4], [components objectAtIndex:5], concatenateStringBottom, [components objectAtIndex:7]];
-        }
-        [comands addObject:holdAlarmTwo];
-        NSLog(@"%@", holdAlarmTwo);
-        
-        [comands addObject:holdAlarmTwo];
-    } else {
-        holdAlarmTwo = [NSString stringWithFormat:@"RESET LOCK #%@", pin];
-        [comands addObject:holdAlarmTwo];
-    }
+    NSString *commandStringTwo = [self generationCommandString:self.holdAlarmSwitchTwo.isOn
+                                                    pvPosition:arrayPostionPvBottom selectDay:arraySelectedDaysBottom];
+    
+    [comands addObject:commandStringOne];
+    [comands addObject:commandStringTwo];
+    
+    NSLog(@"%@", commandStringOne);
+    NSLog(@"%@", commandStringTwo);
+    
     
     return comands;
 }
 
+
+- (NSString *)generationCommandString:(BOOL)switchPosition pvPosition:(NSArray *)position selectDay:(NSArray *)selectDays
+{
+    
+    NSString *pin = [self.userDefaults objectForKey:@"pin"];
+    NSString *holdAlarm = nil;
+    
+    if (switchPosition == YES)
+    {
+        NSString *fromHours = [position objectAtIndex:0];
+        NSString *fromMinutes = [position objectAtIndex:1];
+        NSString *toHours = [position objectAtIndex:2];
+        NSString *toMinutes  = [position objectAtIndex:3];
+        
+        NSString *intermediateString = [NSString stringWithFormat:@"​SET HOLDALARM %@ %@ %@ %@ X #%@",fromHours, fromMinutes, toHours, toMinutes, pin];
+        
+        if ([selectDays count] > 0) {
+            
+            NSMutableString *concatenateStringBottom = [NSMutableString string];
+            
+            for (int i = 0; i < [selectDays count]; i++) {
+                NSString *selectDay = [selectDays objectAtIndex:i];
+                [concatenateStringBottom appendString:[NSString stringWithFormat:@"%@ ", selectDay]];
+            }
+            
+            NSArray *components = [intermediateString componentsSeparatedByString:@" "];
+            holdAlarm = [NSString stringWithFormat:@"%@ %@ %@ %@ %@ %@ %@%@", [components objectAtIndex:0], [components objectAtIndex:1], [components objectAtIndex:2], [components objectAtIndex:3], [components objectAtIndex:4], [components objectAtIndex:5], concatenateStringBottom, [components objectAtIndex:7]];
+        }
+        
+    } else {
+        
+        holdAlarm = [NSString stringWithFormat:@"RESET LOCK #%@", pin];
+    }
+    
+    return holdAlarm;
+    
+}
 
 
 #pragma mark - UIPickerViewDataSource
@@ -529,12 +526,12 @@
 
 - (IBAction)actionSendButton:(id)sender
 {
-//    self.contactPicker = [[CNContactPickerViewController alloc] init];
-//    self.contactPicker.delegate = self;
-//    
-//    [self presentViewController:self.contactPicker animated:YES completion:nil];
     
-    [self configureComand];
+    self.contactPicker = [[CNContactPickerViewController alloc] init];
+    self.contactPicker.delegate = self;
+    
+    [self presentViewController:self.contactPicker animated:YES completion:nil];
+    
 }
 
 
@@ -559,12 +556,19 @@
 
 - (void)sendMessage:(NSArray *)recipients
 {
-
-    MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:@""];
-    messageComposeViewController.messageComposeDelegate = self;
     
-    [self dismissViewControllerAnimated:NO completion:nil];
-    [self presentViewController:messageComposeViewController animated:YES completion:nil];
+    self.comands = [self configureCommand];
+    
+    if (self.counterComand <= [self.comands count] - 1) {
+
+        MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString stringWithFormat:@"%@", [self.comands objectAtIndex:self.counterComand]]];
+        messageComposeViewController.messageComposeDelegate = self;
+        
+        ++self.counterComand;
+        [self dismissViewControllerAnimated:NO completion:nil];
+        [self presentViewController:messageComposeViewController animated:YES completion:nil];
+        
+    }
     
 }
 
@@ -580,6 +584,14 @@
     }
     else if (result == MessageComposeResultSent) {
         NSLog(@"Message sent");
+        
+        if (self.counterComand <= [self.comands count]) {
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self sendMessage:self.recipient];
+//                ++self.counter;
+            });
+        }
     }
     else {
         NSLog(@"Message failed");
