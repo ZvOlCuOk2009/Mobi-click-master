@@ -12,10 +12,6 @@
 #import "NSString+TSString.h"
 #import "TSPrefixHeader.pch"
 
-//#import <Messages/Messages.h>
-//#import <MessageUI/MFMessageComposeViewController.h>
-//#import <ContactsUI/ContactsUI.h>
-
 @interface TSAudioViewController () <UITableViewDataSource, UITableViewDelegate, MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIPickerView *loudspeackerPickerView;
@@ -37,8 +33,6 @@
 @property (strong, nonatomic) NSMutableArray *dataSourceSignalVolume;
 @property (strong, nonatomic) NSArray *namesRingtons;
 
-//@property (strong, nonatomic) NSArray *recipient;
-//@property (strong, nonatomic) NSUserDefaults *userDefaults;
 @property (strong, nonatomic) NSDictionary *valuesDictionary;
 
 @property (strong, nonatomic) NSString *valuePickerViewLoudspeacker;

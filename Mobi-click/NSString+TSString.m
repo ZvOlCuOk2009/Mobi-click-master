@@ -106,9 +106,35 @@ static NSString *pin;
 }
 
 
-+ (NSString *)setHoldAlarmComand:(NSDictionary *)dictionaryValue checker:(BOOL)checker
++ (NSString *)setGpsCoordinateComand:(NSDictionary *)dictionaryValue determinant:(NSInteger)determinant
 {
-    return [NSString stringWithFormat:@""];
+    NSString *command = nil;
+    NSString *zonePV = [dictionaryValue objectForKey:@"zone"];
+    
+    if (determinant == 1) {
+        
+        NSString *nsOnePV = [dictionaryValue objectForKey:@"nsOne"];
+        NSString *ewOnePV = [dictionaryValue objectForKey:@"ewOne"];
+        NSString *nsTwoPV = [dictionaryValue objectForKey:@"nsTwo"];
+        NSString *ewTwoPV = [dictionaryValue objectForKey:@"ewTwo"];
+        NSString *lattitudeOneTF = [dictionaryValue objectForKey:@"lattitudeOne"];
+        NSString *longtittudeOneTF = [dictionaryValue objectForKey:@"longtittudeOne"];
+        NSString *lattitudeTwoTF = [dictionaryValue objectForKey:@"lattitudeTwo"];
+        NSString *longtittudeTwoTF = [dictionaryValue objectForKey:@"longtittudeTwo"];
+        
+        command = [NSString stringWithFormat:@"SET %@ %@%@ %@%@ %@%@ %@%@ #%@", zonePV, lattitudeOneTF, nsOnePV, longtittudeOneTF, ewOnePV, lattitudeTwoTF, nsTwoPV, longtittudeTwoTF, ewTwoPV, pin];
+        
+    } else if (determinant == 2) {
+        
+        command = [NSString stringWithFormat:@"RESET %@ #%@", zonePV, pin];
+        
+    } else if (determinant == 3) {
+        
+        command = [NSString stringWithFormat:@"TEST %@ #%@", zonePV, pin];
+        
+    }
+    
+    return command;
 }
 
 

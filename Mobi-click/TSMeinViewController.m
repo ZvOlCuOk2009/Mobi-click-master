@@ -32,13 +32,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *voiceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *vibraLabel;
 
-//@property (strong, nonatomic) NSArray *recipient;
-//@property (strong, nonatomic) NSArray *comands;
-//@property (strong, nonatomic) NSUserDefaults *userDefaults;
 @property (strong, nonatomic) NSDictionary *valuesDictionary;
 
 @property (assign, nonatomic) NSInteger counter;
-//@property (assign, nonatomic) NSInteger counterComand;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
