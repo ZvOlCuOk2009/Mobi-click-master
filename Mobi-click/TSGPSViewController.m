@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *lattitudeTwoTextField;
 @property (weak, nonatomic) IBOutlet UITextField *longtittudeTwoTextField;
 
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *lattitudeOneLabel;
 @property (weak, nonatomic) IBOutlet UILabel *loungtittudeOneLabel;
 @property (weak, nonatomic) IBOutlet UILabel *lattitudeTwoLabel;
@@ -50,14 +51,18 @@
 }
 
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setLaunguage];
+}
+
 
 #pragma mark - Actions
 
 
 - (IBAction)actionButtonSet:(id)sender
 {
-    
-    NSLog(@"lattitudeOne %@ \n longtittudeOne %@ \n lattitudeTwo %@ \n longtittudeTwo %@", self.lattitudeOneTextField.text, self.longtittudeOneTextField.text, self.lattitudeTwoTextField.text, self.longtittudeTwoTextField.text);
     
     NSUInteger characterCountLattitudeOne = [self.lattitudeOneTextField.text length];
     NSUInteger characterCountLongtittudeeOne = [self.longtittudeOneTextField.text length];
@@ -381,6 +386,53 @@
     }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+
+#pragma mark - methods set launguage
+
+
+- (void)setLaunguage
+{
+    NSString *language = [[NSUserDefaults standardUserDefaults] objectForKey:@"language"];
+    
+    if ([language isEqualToString:@"English"]) {
+        
+        [self setEngleshLaunguage];
+        
+    } else if ([language isEqualToString:@"German"]) {
+        
+        [self setGermanLaunguage];
+    }
+}
+
+
+- (void)setEngleshLaunguage
+{
+    [self.titleLabel setText:@"Programming GPS zones"];
+    [self.lattitudeOneLabel setText:@"Lattitude1"];
+    [self.loungtittudeOneLabel setText:@"Longtittude1"];
+    [self.lattitudeTwoLabel setText:@"Lattitude2"];
+    [self.loungtittudeTwoLabel setText:@"Longtittude2"];
+    [self.lattitudeOneTextField setPlaceholder:@"Upper border"];
+    [self.longtittudeOneTextField setPlaceholder:@"Left border"];
+    [self.lattitudeTwoTextField setPlaceholder:@"Bottom border"];
+    [self.longtittudeTwoTextField setPlaceholder:@"Right border"];
+}
+
+
+- (void)setGermanLaunguage
+{
+    [self.titleLabel setText:@"Programmierung der Sicherheitszonen GPS"];
+    [self.lattitudeOneLabel setText:@"Breitengrad1"];
+    [self.loungtittudeOneLabel setText:@"Längengrad1"];
+    [self.lattitudeTwoLabel setText:@"Breitengrad2"];
+    [self.loungtittudeTwoLabel setText:@"Längengrad2"];
+    [self.lattitudeOneTextField setPlaceholder:@"obere Grenze"];
+    [self.longtittudeOneTextField setPlaceholder:@"linke Grenze"];
+    [self.lattitudeTwoTextField setPlaceholder:@"untere Grenze"];
+    [self.longtittudeTwoTextField setPlaceholder:@"rechte Grenze"];
+}
+
 
 
 #pragma mark - UIAlertController

@@ -34,9 +34,11 @@
 
 @property (strong, nonatomic) NSDictionary *valuesDictionary;
 
-@property (assign, nonatomic) NSInteger counter;
-
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+
+@property (strong, nonatomic) NSString *sensorSettingsMovie;
+@property (strong, nonatomic) NSString *sensorSettingsVoice;
+@property (strong, nonatomic) NSString *sensorSettingsVibra;
 
 @end
 
@@ -92,14 +94,13 @@
 {
     [super viewDidLayoutSubviews];
     
+    [self.scrollView setContentSize:CGSizeMake(320, 603)];
+    
     if (IS_IPHONE_4) {
-        [self.scrollView setContentSize:CGSizeMake(320, 603)];
         self.scrollView.frame = CGRectMake(0, 64, 320, 436);
     } else if (IS_IPHONE_5) {
-        [self.scrollView setContentSize:CGSizeMake(320, 603)];
         self.scrollView.frame = CGRectMake(0, 64, 320, 524);
     } else if (IS_IPHONE_6) {
-        [self.scrollView setContentSize:CGSizeMake(320, 603)];
         self.scrollView.frame = CGRectMake(0, 64, 375, 623);
     } else if (IS_IPHONE_6_PLUS) {
         [self.scrollView setContentSize:CGSizeMake(320, 672)];
@@ -162,41 +163,43 @@
     self.userDefaults = [NSUserDefaults standardUserDefaults];
     NSString *pin = [self.userDefaults objectForKey:@"pin"];
     
-    NSString *sensorSettingsMovie = [self.valuesDictionary objectForKey:@"valueMove"];
-    NSString *sensorSettingsVoice = [self.valuesDictionary objectForKey:@"valueVoice"];
-    NSString *sensorSettingsVibra = [self.valuesDictionary objectForKey:@"valueVibra"];
     
-    NSString *alarm = nil;
-    NSString *move = nil;
-    NSString *voice = nil;
-    NSString *vibra = nil;
+    self.sensorSettingsMovie = [self.valuesDictionary objectForKey:@"valueMove"];
+    self.sensorSettingsVoice = [self.valuesDictionary objectForKey:@"valueVoice"];
+    self.sensorSettingsVibra = [self.valuesDictionary objectForKey:@"valueVibra"];
+    
+    
+    NSString *commandAlarm = nil;
+    NSString *commandMove = nil;
+    NSString *commandVoice = nil;
+    NSString *commandVibra = nil;
     
     if (self.switchAlarm.isOn) {
-        alarm = [NSString stringWithFormat:@"SET SECURITY #%@", pin];
+        commandAlarm = [NSString stringWithFormat:@"SET SECURITY #%@", pin];
     } else {
-        alarm = [NSString stringWithFormat:@"RESET SECURITY #%@", pin];
+        commandAlarm = [NSString stringWithFormat:@"RESET SECURITY #%@", pin];
     }
     
     if (self.switchMove.isOn) {
-        move = [NSString stringWithFormat:@"SET MOVE%@ #%@", sensorSettingsMovie, pin];
+        commandMove = [NSString stringWithFormat:@"SET MOVE %@ #%@", self.sensorSettingsMovie, pin];
     } else {
-        move = [NSString stringWithFormat:@"RESET MOVE #%@", pin];
+        commandMove = [NSString stringWithFormat:@"RESET MOVE #%@", pin];
     }
     
     if (self.switchVoice.isOn) {
-        voice = [NSString stringWithFormat:@"SET VOICE%@ #%@", sensorSettingsVoice, pin];
+        commandVoice = [NSString stringWithFormat:@"SET VOICE %@ #%@", self.sensorSettingsVoice, pin];
     } else {
-        voice = [NSString stringWithFormat:@"RESET VOICE #%@", pin];
+        commandVoice = [NSString stringWithFormat:@"RESET VOICE #%@", pin];
     }
     
     if (self.switchVibra.isOn) {
-        vibra = [NSString stringWithFormat:@"SET VIBRA%@ #%@", sensorSettingsVibra, pin];
+        commandVibra = [NSString stringWithFormat:@"SET VIBRA %@ #%@", self.sensorSettingsVibra, pin];
     } else {
-        vibra = [NSString stringWithFormat:@"RESET VIBRA #%@", pin];
+        commandVibra = [NSString stringWithFormat:@"RESET VIBRA #%@", pin];
     }
     
     
-    NSArray *comands = @[alarm, move, voice, vibra];
+    NSArray *comands = @[commandAlarm, commandMove, commandVoice, commandVibra];
         
     return comands;
 }
@@ -208,14 +211,38 @@
 - (IBAction)actionSendButton:(id)sender
 {
 
-    self.contactPicker = [[CNContactPickerViewController alloc] init];
-    self.contactPicker.delegate = self;
-    
-    [self presentViewController:self.contactPicker animated:YES completion:nil];
-    
-    self.counter = 0;
-    self.counterComand = 0;
-    
+    if (self.sensorSettingsMovie && self.sensorSettingsVibra && self.sensorSettingsVoice) {
+        
+        self.contactPicker = [[CNContactPickerViewController alloc] init];
+        self.contactPicker.delegate = self;
+        
+        [self presentViewController:self.contactPicker animated:YES completion:nil];
+        
+        self.counter = 0;
+        self.counterComand = 0;
+        
+    } else {
+        
+        NSString *title = @"For the formation of command, you need to confirm the settings on the screen ""Sensor""";
+        
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+                                                                                 message:nil
+                                                                          preferredStyle:(UIAlertControllerStyleAlert)];
+     
+        UIAlertAction *alertActionOk = [UIAlertAction actionWithTitle:@"Ok"
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * _Nonnull action) {
+                                                                  
+                                                                  TSSensorViewController *sensorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"TSSensorViewController"];
+                                                                  [self.navigationController pushViewController:sensorViewController animated:YES];
+                                                                  
+                                                              }];
+        
+        [alertController addAction:alertActionOk];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+  
 }
 
 

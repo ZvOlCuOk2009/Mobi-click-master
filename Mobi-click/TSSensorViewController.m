@@ -23,8 +23,6 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 @property (weak, nonatomic) IBOutlet UILabel *vibraLabel;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
 
-//@property (strong, nonatomic) NSUserDefaults *userDefaults;
-
 @property (strong, nonatomic) NSArray *dataSource;
 
 @end
@@ -49,7 +47,6 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 
 - (void)configureController
 {
-//    self.userDefaults = [NSUserDefaults standardUserDefaults];
     
     self.dataSource = @[@"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"10"];
     

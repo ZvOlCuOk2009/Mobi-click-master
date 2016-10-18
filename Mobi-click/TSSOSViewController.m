@@ -11,10 +11,6 @@
 #import "TSPostingMessagesManager.h"
 #import "NSString+TSString.h"
 
-//#import <Messages/Messages.h>
-//#import <MessageUI/MFMessageComposeViewController.h>
-//#import <ContactsUI/ContactsUI.h>
-
 @interface TSSOSViewController () <MFMessageComposeViewControllerDelegate, UITextFieldDelegate, CNContactPickerDelegate>
 
 @property (strong, nonatomic) IBOutletCollection(UITextField) NSArray *textFieldOutletCollection;
@@ -44,8 +40,6 @@
 @property (assign, nonatomic) BOOL switchChekerFore;
 @property (assign, nonatomic) BOOL switchChekerFive;
 @property (assign, nonatomic) BOOL switchChekerSix;
-
-//@property (strong, nonatomic) NSArray *recipient;
 
 @end
 
@@ -328,10 +322,17 @@
 }
 
 
+#pragma mark - UITextFieldDelegate
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
-replacementString:(NSString *)string
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
+    
+    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    
+    if ([newString length] >= 10) {
+        return  NO;
+    }
     
     if (textField == self.numberTelTextFieldOne ||
         textField == self.numberTelTextFieldTwo ||
@@ -354,20 +355,9 @@ replacementString:(NSString *)string
         return YES;
     }
     
-    //не работает!
-    
-    if(range.length + range.location > textField.text.length)
-    {
-        return NO;
-    }
-    
-    NSUInteger newLength = [textField.text length] + [string length] - range.length;
-    return newLength <= LIMIT_CHARACTER;
-    
+    return YES;
 }
 
-
-#pragma mark - UITextFieldDelegate
 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField

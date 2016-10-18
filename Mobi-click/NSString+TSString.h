@@ -18,5 +18,6 @@
 + (NSString *)changeLaunguageComand:(NSString *)newLaunguage;
 + (NSString *)setRingtonComand:(NSDictionary *)dictionaryValue;
 + (NSString *)setGpsCoordinateComand:(NSDictionary *)dictionaryValue determinant:(NSInteger)determinant;
++ (NSString *)resetSettingsComand;
 
 @end

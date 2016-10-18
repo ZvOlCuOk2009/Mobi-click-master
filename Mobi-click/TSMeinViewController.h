@@ -23,6 +23,7 @@
 @property (strong, nonatomic) NSArray *comands;
 @property (strong, nonatomic) NSUserDefaults *userDefaults;
 
+@property (assign, nonatomic) NSInteger counter;
 @property (assign, nonatomic) NSInteger counterComand;
 
 @end

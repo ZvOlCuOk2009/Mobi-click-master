@@ -22,8 +22,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
 
-//@property (strong, nonatomic) NSArray *recipient;
-
 @end
 
 @implementation TSTelViewController
@@ -168,26 +166,28 @@
 
 
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
-replacementString:(NSString *)string
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    if (textField == self.textField) {
-        
-        NSCharacterSet *myCharSet = [NSCharacterSet characterSetWithCharactersInString:VALID_CHARACTER];
-        
-        for (int i = 0; i < [string length]; i++)
+    
+    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    
+    if ([newString length] >= 10) {
+        return  NO;
+    }
+    
+    NSCharacterSet *myCharSet = [NSCharacterSet characterSetWithCharactersInString:VALID_CHARACTER];
+    
+    for (int i = 0; i < [string length]; i++)
+    {
+        unichar c = [string characterAtIndex:i];
+        if (![myCharSet characterIsMember:c])
         {
-            unichar c = [string characterAtIndex:i];
-            if (![myCharSet characterIsMember:c])
-            {
-                return NO;
-            }
+            return NO;
         }
-        
-        return YES;
     }
     
     return YES;
+        
 }
 
 

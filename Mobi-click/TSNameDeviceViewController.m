@@ -20,9 +20,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *textFieldNameDevice;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
-//@property (strong, nonatomic) NSUserDefaults *userDefaults;
-//@property (strong, nonatomic) NSArray *recipient;
-
 @end
 
 @implementation TSNameDeviceViewController

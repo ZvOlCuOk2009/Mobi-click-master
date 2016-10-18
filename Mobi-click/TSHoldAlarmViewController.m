@@ -18,6 +18,11 @@
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
+@property (weak, nonatomic) IBOutlet UILabel *fromLabel;
+@property (weak, nonatomic) IBOutlet UILabel *fromLabelTwo;
+@property (weak, nonatomic) IBOutlet UILabel *toLabel;
+@property (weak, nonatomic) IBOutlet UILabel *toLabelTwo;
+
 @property (weak, nonatomic) IBOutlet UISwitch *holdAlarmSwitchOne;
 @property (weak, nonatomic) IBOutlet UISwitch *holdAlarmSwitchTwo;
 
@@ -29,6 +34,8 @@
 @property (weak, nonatomic) IBOutlet UIPickerView *fromHourPickerViewTwo;
 @property (weak, nonatomic) IBOutlet UIPickerView *toMinPickerViewTwo;
 @property (weak, nonatomic) IBOutlet UIPickerView *toHourPickerViewTwo;
+
+@property (weak, nonatomic) IBOutlet UIButton *sendButtonLabel;
 
 @property (weak, nonatomic) IBOutlet UIButton *checkerButtonOneRowOne;
 @property (weak, nonatomic) IBOutlet UIButton *checkerButtonTwoRowOne;
@@ -70,6 +77,13 @@
     self.userDefaults = [NSUserDefaults standardUserDefaults];
     [self configureContrioller];
     
+}
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setLaunguage];
 }
 
 
@@ -589,7 +603,6 @@
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self sendMessage:self.recipient];
-//                ++self.counter;
             });
         }
     }
@@ -597,6 +610,44 @@
         NSLog(@"Message failed");
     }
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+#pragma mark - methods set launguage
+
+
+- (void)setLaunguage
+{
+    NSString *language = [[NSUserDefaults standardUserDefaults] objectForKey:@"language"];
+    
+    if ([language isEqualToString:@"English"]) {
+        
+        [self setEngleshLaunguage];
+        
+    } else if ([language isEqualToString:@"German"]) {
+        
+        [self setGermanLaunguage];
+    }
+}
+
+
+- (void)setEngleshLaunguage
+{
+    [self.fromLabel setText:@"from"];
+    [self.fromLabelTwo setText:@"from"];
+    [self.toLabel setText:@"to"];
+    [self.toLabelTwo setText:@"to"];
+    [self.sendButtonLabel setTitle:@"SEND" forState:UIControlStateNormal];
+}
+
+
+- (void)setGermanLaunguage
+{
+    [self.fromLabel setText:@"von"];
+    [self.fromLabelTwo setText:@"von"];
+    [self.toLabel setText:@"bis"];
+    [self.toLabelTwo setText:@"bis"];
+    [self.sendButtonLabel setTitle:@"SENDEN" forState:UIControlStateNormal];
 }
 
 

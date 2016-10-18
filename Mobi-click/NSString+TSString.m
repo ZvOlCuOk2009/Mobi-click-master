@@ -26,6 +26,10 @@ static NSString *pin;
 + (NSString *)sosComand:(NSArray *)numberPhones checkerPosirion:(NSArray *)checker
 {
     
+    NSMutableString *sosComand = [NSMutableString stringWithFormat:@"Set TEL1 "];
+    NSString *prefix = @"0049";
+    NSString *sharp = @"#";
+    
     NSString *numberOne = [numberPhones objectAtIndex:0];
     NSString *numberTwo = [numberPhones objectAtIndex:1];
     NSString *numberThree = [numberPhones objectAtIndex:2];
@@ -41,9 +45,40 @@ static NSString *pin;
     NSString *checkerFive = [checker objectAtIndex:4];
     NSString *checkerSix = [checker objectAtIndex:5];
     
-    NSString *prefix = @"49";
     
-    NSString *sosComand = [NSString stringWithFormat:@"Set TEL1 %@ %@%@ %@ %@%@ %@ %@%@ %@ %@%@ %@ %@%@ %@ %@%@ #%@", checkerOne, prefix, numberOne, checkerTwo, prefix, numberTwo, checkerThree, prefix, numberThree, checkerFore, prefix, numberFore, checkerFive, prefix, numberFive, checkerSix, prefix, numberSix, pin];
+    if ([numberOne length] > 1) {
+        NSString *partComand1 = [NSString stringWithFormat:@"%@ %@%@ ", checkerOne, prefix, numberOne];
+        [sosComand appendString:partComand1];
+    }
+    
+    if ([numberTwo length] > 1) {
+        NSString *partComand2 = [NSString stringWithFormat:@"%@ %@%@ ", checkerTwo, prefix, numberTwo];
+        [sosComand appendString:partComand2];
+    }
+    
+    if ([numberThree length] > 1) {
+        NSString *partComand3 = [NSString stringWithFormat:@"%@ %@%@ ", checkerThree, prefix, numberThree];
+        [sosComand appendString:partComand3];
+    }
+    
+    if ([numberFore length] > 1) {
+        NSString *partComand4 = [NSString stringWithFormat:@"%@ %@%@ ", checkerFore, prefix, numberFore];
+        [sosComand appendString:partComand4];
+    }
+    
+    if ([numberFive length] > 1) {
+        NSString *partComand5 = [NSString stringWithFormat:@"%@ %@%@ ", checkerFive, prefix, numberFive];
+        [sosComand appendString:partComand5];
+    }
+    
+    if ([numberSix length] > 1) {
+        NSString *partComand6 = [NSString stringWithFormat:@"%@ %@%@ ", checkerSix, prefix, numberSix];
+        [sosComand appendString:partComand6];
+    }
+    
+    [sosComand appendString:sharp];
+    [sosComand appendString:pin];
+    
     
     return sosComand;
     
@@ -60,7 +95,7 @@ static NSString *pin;
         checkerIsOn = @"C";
     }
     
-    return [NSString stringWithFormat:@"Set TEL1 %@ 49%@ %@#", checkerIsOn, numberPhone, pin];
+    return [NSString stringWithFormat:@"Set TEL %@ 0049%@ %@#", checkerIsOn, numberPhone, pin];
 }
 
 
@@ -102,7 +137,7 @@ static NSString *pin;
     NSString *ringtone = [dictionaryValue objectForKey:@"ringtone"];
     NSString *determinant = [dictionaryValue objectForKey:@"determinant"];
     
-    return [NSString stringWithFormat:@"SET AUDIO %@ %@ %@ %@ %@ #%@", speaker, microphone, determinant, ringtone, ringtone, pin];
+    return [NSString stringWithFormat:@"SET AUDIO %@ %@ %@ %@ %@ #%@", speaker, microphone, ringtone, ringtone, determinant, pin];
 }
 
 
@@ -135,6 +170,12 @@ static NSString *pin;
     }
     
     return command;
+}
+
+
++ (NSString *)resetSettingsComand
+{
+    return [NSString stringWithFormat:@"RESET SETUP 12345678 #%@", pin];
 }
 
 

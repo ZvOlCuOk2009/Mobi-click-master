@@ -11,10 +11,6 @@
 #import "NSString+TSString.h"
 #import "TSPrefixHeader.pch"
 
-//#import <Messages/Messages.h>
-//#import <MessageUI/MFMessageComposeViewController.h>
-//#import <ContactsUI/ContactsUI.h>
-
 @interface TSTimeDateViewController () <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIPickerView *hoursPickerView;
@@ -33,9 +29,6 @@
 @property (strong, nonatomic) NSMutableArray *dataSourceDays;
 @property (strong, nonatomic) NSMutableArray *dataSourceMonths;
 @property (strong, nonatomic) NSMutableArray *dataSourceYears;
-
-//@property (strong, nonatomic) NSUserDefaults *userDefaults;
-//@property (strong, nonatomic) NSArray *recipient;
 
 @property (strong, nonatomic) NSString *valuePickerViewHours;
 @property (strong, nonatomic) NSString *valuePickerViewMinutes;
@@ -152,7 +145,6 @@
 #pragma mark - save picker view position
 
 
-
 - (void)saveSettingsPickerView
 {
     
@@ -252,6 +244,7 @@
     }
     else if (result == MessageComposeResultSent) {
         NSLog(@"Message sent");
+        [self saveSettingsPickerView];
     }
     else {
         NSLog(@"Message failed");

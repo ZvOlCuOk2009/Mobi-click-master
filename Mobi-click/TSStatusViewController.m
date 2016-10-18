@@ -44,11 +44,6 @@
 @property (strong, nonatomic) NSString *valuePickerViewGps;
 @property (strong, nonatomic) NSString *valuePickerViewEdleAlarm;
 
-//@property (strong, nonatomic) NSArray *recipient;
-//@property (strong, nonatomic) NSArray *comands;
-//@property (strong, nonatomic) NSUserDefaults *userDefaults;
-
-@property (assign, nonatomic) NSInteger counter;
 @property (assign, nonatomic) NSInteger regognizer;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;

@@ -21,19 +21,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *pinLabel;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
 @property (weak, nonatomic) IBOutlet UILabel *displayOldPinLabel;
-@property (strong, nonatomic) NSString *launguage;
-
-//@property (strong, nonatomic) NSArray *recipient;
-
 @property (weak, nonatomic) IBOutlet UITextField *textFieldNewPin;
 
-@property (strong, nonatomic) NSArray *dataSource;
-//@property (strong, nonatomic) NSArray *comands;
-//@property (strong, nonatomic) NSUserDefaults *userDefaults;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
-@property (assign, nonatomic) NSInteger counter;
-//@property (assign, nonatomic) NSInteger counterComand;
+@property (strong, nonatomic) NSString *launguage;
+@property (strong, nonatomic) NSArray *dataSource;
 
 @end
 
