@@ -53,19 +53,37 @@
 {
     [super viewDidLayoutSubviews];
     
-    if (IS_IPHONE_4) {
-        [self.scrollView setContentSize:CGSizeMake(320, 436)];
-        self.scrollView.frame = CGRectMake(0, 64, 320, 436);
-    } else if (IS_IPHONE_5) {
-        [self.scrollView setContentSize:CGSizeMake(320, 524)];
-        self.scrollView.frame = CGRectMake(0, 64, 320, 524);
-    } else if (IS_IPHONE_6) {
-        [self.scrollView setContentSize:CGSizeMake(320, 603)];
-        self.scrollView.frame = CGRectMake(0, 64, 375, 603);
-    } else if (IS_IPHONE_6_PLUS) {
-        [self.scrollView setContentSize:CGSizeMake(320, 672)];
-        self.scrollView.frame = CGRectMake(0, 64, 414, 672);
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        
+        if (IS_IPHONE_4) {
+            [self.scrollView setContentSize:CGSizeMake(320, 436)];
+            self.scrollView.frame = CGRectMake(0, 64, 320, 436);
+        } else if (IS_IPHONE_5) {
+            [self.scrollView setContentSize:CGSizeMake(320, 524)];
+            self.scrollView.frame = CGRectMake(0, 64, 320, 524);
+        } else if (IS_IPHONE_6) {
+            [self.scrollView setContentSize:CGSizeMake(320, 603)];
+            self.scrollView.frame = CGRectMake(0, 64, 375, 603);
+        } else if (IS_IPHONE_6_PLUS) {
+            [self.scrollView setContentSize:CGSizeMake(320, 672)];
+            self.scrollView.frame = CGRectMake(0, 64, 414, 672);
+        }
+        
+    } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        
+        if (IS_IPAD_2) {
+            [self.scrollView setContentSize:CGSizeMake(768, 960)];
+            self.scrollView.frame = CGRectMake(0, 64, 768, 960);
+        } else if (IS_IPAD_AIR) {
+            [self.scrollView setContentSize:CGSizeMake(1536, 1984)];
+            self.scrollView.frame = CGRectMake(0, 64, 1536, 1984);
+        } else if (IS_IPAD_PRO) {
+            [self.scrollView setContentSize:CGSizeMake(2048, 2732)];
+            self.scrollView.frame = CGRectMake(0, 64, 2048, 2732);
+        }
+        
     }
+    
 }
 
 

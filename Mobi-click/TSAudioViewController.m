@@ -39,7 +39,10 @@
 @property (strong, nonatomic) NSString *valuePickerViewMicrophone;
 @property (strong, nonatomic) NSString *valuePickerViewRingtones;
 
+@property (strong, nonatomic) NSMutableArray *arrarCheckerButtons;
+
 @property (assign, nonatomic) NSInteger determinantPressedButton;
+@property (assign, nonatomic) NSInteger setTag;
 @property (assign, nonatomic) BOOL switchCheker;
 
 @end
@@ -85,7 +88,6 @@
 }
 
 
-
 #pragma mark - Configure contrioller
 
 
@@ -109,6 +111,13 @@
         [self.dataSourceSignalVolume addObject:intervalString];
     }
     
+    self.clickImage = [UIImage imageNamed:@"click"];
+    self.noclickImage = [UIImage imageNamed:@"noclick"];
+    
+    self.arrarCheckerButtons = [NSMutableArray array];
+    
+    self.setTag = 0;
+
 }
 
 
@@ -190,14 +199,25 @@
     
     [self presentViewController:self.contactPicker animated:YES completion:nil];
     
-    NSLog(@"pressed button - %ld", (long)self.determinantPressedButton);
 }
 
 
-- (IBAction)actionCheckerButton:(id)sender
+- (IBAction)actionCheckerButton:(UIButton *)sender
 {
+    
     NSIndexPath *indexPath = [self determineTheAffiliationSectionOfTheCell:sender];
     self.determinantPressedButton = indexPath.row;
+    
+    for (UIButton *clickButton in self.arrarCheckerButtons) {
+        
+        if (clickButton.tag == indexPath.row) {
+            
+                [clickButton setImage:self.clickImage forState:UIControlStateNormal];
+        } else {
+            [clickButton setImage:self.noclickImage forState:UIControlStateNormal];
+        }
+    }
+    
 }
 
 
@@ -241,7 +261,15 @@
     }
     
     cell.ringtonLabel.text = [NSString stringWithFormat:@"%@", [self.namesRingtons objectAtIndex:indexPath.row]];
-
+    
+    if (self.setTag <= 9) {
+        
+        cell.checkerButton.tag = self.setTag;
+        [self.arrarCheckerButtons addObject:cell.checkerButton];
+        
+        ++self.setTag;
+    }
+    
     return  cell;
     
 }

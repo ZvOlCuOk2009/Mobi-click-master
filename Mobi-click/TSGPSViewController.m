@@ -221,6 +221,10 @@
 - (void)configureController
 {
     
+    self.titleImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
+    [self.titleImageView setFrame:CGRectMake(0, 0, 250, 44)];
+    self.navigationItem.titleView = self.titleImageView;
+    
     self.nsOnePickerView.layer.borderColor = [BLUE_COLOR CGColor];
     self.ewOnePickerView.layer.borderColor = [BLUE_COLOR CGColor];
     self.nsTwoPickerView.layer.borderColor = [BLUE_COLOR CGColor];

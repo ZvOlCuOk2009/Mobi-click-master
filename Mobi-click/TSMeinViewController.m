@@ -164,10 +164,6 @@
     NSString *pin = [self.userDefaults objectForKey:@"pin"];
     
     
-    self.sensorSettingsMovie = [self.valuesDictionary objectForKey:@"valueMove"];
-    self.sensorSettingsVoice = [self.valuesDictionary objectForKey:@"valueVoice"];
-    self.sensorSettingsVibra = [self.valuesDictionary objectForKey:@"valueVibra"];
-    
     
     NSString *commandAlarm = nil;
     NSString *commandMove = nil;
@@ -211,6 +207,10 @@
 - (IBAction)actionSendButton:(id)sender
 {
 
+    self.sensorSettingsMovie = [self.valuesDictionary objectForKey:@"valueMove"];
+    self.sensorSettingsVoice = [self.valuesDictionary objectForKey:@"valueVoice"];
+    self.sensorSettingsVibra = [self.valuesDictionary objectForKey:@"valueVibra"];
+    
     if (self.sensorSettingsMovie && self.sensorSettingsVibra && self.sensorSettingsVoice) {
         
         self.contactPicker = [[CNContactPickerViewController alloc] init];

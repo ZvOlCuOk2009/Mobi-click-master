@@ -230,9 +230,6 @@
     [comands addObject:commandStringOne];
     [comands addObject:commandStringTwo];
     
-    NSLog(@"%@", commandStringOne);
-    NSLog(@"%@", commandStringTwo);
-    
     
     return comands;
 }
@@ -268,7 +265,7 @@
         
     } else {
         
-        holdAlarm = [NSString stringWithFormat:@"RESET LOCK #%@", pin];
+        holdAlarm = [NSString stringWithFormat:@"RESET HOLDALARM #%@", pin];
     }
     
     return holdAlarm;

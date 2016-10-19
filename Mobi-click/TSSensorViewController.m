@@ -74,7 +74,6 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
     NSString *valuePickerViewVibra = [self pickerView:self.vibraPickerView
                               titleForRow:[self.vibraPickerView selectedRowInComponent:0] forComponent:0];
 
-    NSLog(@"%@ %@ %@", valuePickerViewMove, valuePickerViewVoice, valuePickerViewVibra);
     
     NSDictionary *valuesPickerView = @{@"valueMove":valuePickerViewMove,
                                        @"valueVoice":valuePickerViewVoice,

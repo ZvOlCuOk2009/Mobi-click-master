@@ -137,7 +137,15 @@ static NSString *pin;
     NSString *ringtone = [dictionaryValue objectForKey:@"ringtone"];
     NSString *determinant = [dictionaryValue objectForKey:@"determinant"];
     
-    return [NSString stringWithFormat:@"SET AUDIO %@ %@ %@ %@ %@ #%@", speaker, microphone, ringtone, ringtone, determinant, pin];
+    NSString *selectRington = nil;
+    
+    if ([determinant isEqualToString:@"0"]) {
+        selectRington = @"0";
+    } else {
+        selectRington = @"1";
+    }
+    
+    return [NSString stringWithFormat:@"SET AUDIO %@ %@ %@ %@ %@ #%@", speaker, microphone, determinant, ringtone, selectRington, pin];
 }
 
 

@@ -25,19 +25,13 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 
-    // Configure the view for the selected state
+
 }
 
 - (IBAction)actionCheckerButton:(id)sender
 {
     
-    if (self.switchCheker == NO) {
-        [self.checkerButton setImage:self.clickImage forState:UIControlStateNormal];
-        self.switchCheker = YES;
-    } else if (self.switchCheker == YES) {
-        [self.checkerButton setImage:self.noclickImage forState:UIControlStateNormal];
-        self.switchCheker = NO;
-    }
+    
     
 }
 
