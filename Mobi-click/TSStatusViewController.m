@@ -388,7 +388,7 @@
     if (self.switchInterval.isOn) {
         status = [NSString stringWithFormat:@"​SET STATUS %@ #%@", self.valuePickerViewInterval, pin];
     } else {
-        status = [NSString stringWithFormat:@"SET STATUS #%@", pin];
+        status = [NSString stringWithFormat:@"RESET STATUS #%@", pin];
     }
     
     return status;

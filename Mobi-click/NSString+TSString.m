@@ -141,9 +141,15 @@ static NSString *pin;
     
     if ([determinant isEqualToString:@"0"]) {
         selectRington = @"0";
-    } else {
+    }
+    else {
         selectRington = @"1";
     }
+//    
+//    if ([determinant isEqualToString:@"-1"]) {
+//        determinant = @"0";
+//    }
+// 
     
     return [NSString stringWithFormat:@"SET AUDIO %@ %@ %@ %@ %@ #%@", speaker, microphone, determinant, ringtone, selectRington, pin];
 }

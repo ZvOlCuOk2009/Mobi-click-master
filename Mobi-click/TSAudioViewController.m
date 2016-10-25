@@ -7,17 +7,21 @@
 //
 
 #import "TSAudioViewController.h"
-#import "TSTableViewCell.h"
 #import "TSPostingMessagesManager.h"
 #import "NSString+TSString.h"
 #import "TSPrefixHeader.pch"
 
-@interface TSAudioViewController () <UITableViewDataSource, UITableViewDelegate, MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
+@interface TSAudioViewController () <MFMessageComposeViewControllerDelegate, CNContactPickerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIPickerView *loudspeackerPickerView;
 @property (weak, nonatomic) IBOutlet UIPickerView *microphonePickerView;
 @property (weak, nonatomic) IBOutlet UIPickerView *ringtonesPickerView;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+
+@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *checkerButtonsOutletCollection;
+
+@property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *nameRingtonLabelOutletColletion;
+
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *speakerVolumeLabel;
@@ -26,7 +30,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *ringonLabel;
 
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
-@property (weak, nonatomic) IBOutlet UIButton *checkerButton;
 
 @property (strong, nonatomic) NSMutableArray *dataSourceSpeakerVolume;
 @property (strong, nonatomic) NSMutableArray *dataSourceMicrophone;
@@ -39,11 +42,7 @@
 @property (strong, nonatomic) NSString *valuePickerViewMicrophone;
 @property (strong, nonatomic) NSString *valuePickerViewRingtones;
 
-@property (strong, nonatomic) NSMutableArray *arrarCheckerButtons;
-
 @property (assign, nonatomic) NSInteger determinantPressedButton;
-@property (assign, nonatomic) NSInteger setTag;
-@property (assign, nonatomic) BOOL switchCheker;
 
 @end
 
@@ -68,6 +67,44 @@
     [super viewWillAppear:animated];
     [self setLaunguage];
     [self loadSettingsPickerView];
+}
+
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        
+        if (IS_IPHONE_4) {
+            [self.scrollView setContentSize:CGSizeMake(320, 667)];
+            self.scrollView.frame = CGRectMake(0, 64, 320, 410);
+        } else if (IS_IPHONE_5) {
+            [self.scrollView setContentSize:CGSizeMake(320, 667)];
+            self.scrollView.frame = CGRectMake(0, 64, 320, 524);
+        } else if (IS_IPHONE_6) {
+            [self.scrollView setContentSize:CGSizeMake(320, 667)];
+            self.scrollView.frame = CGRectMake(0, 64, 375, 603);
+        } else if (IS_IPHONE_6_PLUS) {
+            [self.scrollView setContentSize:CGSizeMake(320, 672)];
+            self.scrollView.frame = CGRectMake(0, 64, 414, 672);
+        }
+        
+    } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        
+        if (IS_IPAD_2) {
+            [self.scrollView setContentSize:CGSizeMake(768, 960)];
+            self.scrollView.frame = CGRectMake(0, 64, 768, 960);
+        } else if (IS_IPAD_AIR) {
+            [self.scrollView setContentSize:CGSizeMake(1536, 1984)];
+            self.scrollView.frame = CGRectMake(0, 64, 1536, 1984);
+        } else if (IS_IPAD_PRO) {
+            [self.scrollView setContentSize:CGSizeMake(2048, 2732)];
+            self.scrollView.frame = CGRectMake(0, 64, 2048, 2732);
+        }
+        
+    }
+    
 }
 
 
@@ -98,6 +135,12 @@
     self.ringtonesPickerView.layer.borderColor = [BLUE_COLOR CGColor];
 
     
+    for (int i = 0; i < self.checkerButtonsOutletCollection.count; i++) {
+        UIButton *checkerButton = [self.checkerButtonsOutletCollection objectAtIndex:i];
+        checkerButton.layer.borderColor = [BLUE_COLOR CGColor];
+        checkerButton.tag = i;
+    }
+    
     self.dataSourceSpeakerVolume = [NSMutableArray array];
     self.dataSourceMicrophone = [NSMutableArray array];
     self.dataSourceSignalVolume = [NSMutableArray array];
@@ -114,10 +157,7 @@
     self.clickImage = [UIImage imageNamed:@"click"];
     self.noclickImage = [UIImage imageNamed:@"noclick"];
     
-    self.arrarCheckerButtons = [NSMutableArray array];
-    
-    self.setTag = 0;
-
+    self.determinantPressedButton = 0;
 }
 
 
@@ -205,30 +245,18 @@
 - (IBAction)actionCheckerButton:(UIButton *)sender
 {
     
-    NSIndexPath *indexPath = [self determineTheAffiliationSectionOfTheCell:sender];
-    self.determinantPressedButton = indexPath.row;
+    self.determinantPressedButton = sender.tag;
     
-    for (UIButton *clickButton in self.arrarCheckerButtons) {
-        
-        if (clickButton.tag == indexPath.row) {
-            
-                [clickButton setImage:self.clickImage forState:UIControlStateNormal];
+    for (UIButton *button in self.checkerButtonsOutletCollection) {
+        if (button.tag == sender.tag) {
+            [button setImage:self.clickImage forState:UIControlStateNormal];
         } else {
-            [clickButton setImage:self.noclickImage forState:UIControlStateNormal];
+            [button setImage:self.noclickImage forState:UIControlStateNormal];
         }
     }
     
 }
 
-
-- (NSIndexPath *)determineTheAffiliationSectionOfTheCell:(UIButton *)button
-{
-    
-    CGPoint buttonPosition = [button convertPoint:CGPointZero toView:self.tableView];
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:buttonPosition];
-    return indexPath;
-    
-}
 
 
 #pragma mark - UIPickerViewDelegate
@@ -237,50 +265,6 @@
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
 {
     return 40;
-}
-
-
-#pragma mark - UITableViewDataSource
-
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return self.namesRingtons.count;
-}
-
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    
-    static NSString *identifier = @"cell";
-    
-    TSTableViewCell *cell = (TSTableViewCell *)[tableView dequeueReusableCellWithIdentifier:identifier];
-    
-    if (!cell) {
-        cell = [[TSTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-    }
-    
-    cell.ringtonLabel.text = [NSString stringWithFormat:@"%@", [self.namesRingtons objectAtIndex:indexPath.row]];
-    
-    if (self.setTag <= 9) {
-        
-        cell.checkerButton.tag = self.setTag;
-        [self.arrarCheckerButtons addObject:cell.checkerButton];
-        
-        ++self.setTag;
-    }
-    
-    return  cell;
-    
-}
-
-
-#pragma mark - UITableViewDelegate
-
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 
@@ -362,11 +346,23 @@
         
         self.namesRingtons = @[@"Mystery", @"German national anthem", @"Mozart", @"Strauss", @"Puccini", @"Vici", @"Quick buzzing", @"Compact sound (Standart)", @"Short buzz", @"Long buzz"];
         
+        for (int i = 0; i < self.namesRingtons.count; i++) {
+            UILabel *label = [self.nameRingtonLabelOutletColletion objectAtIndex:i];
+            NSString *text = [self.namesRingtons objectAtIndex:i];
+            [label setText:text];
+        }
+        
         [self setEngleshLaunguage];
         
     } else if ([language isEqualToString:@"German"]) {
         
         self.namesRingtons = @[@"Mystery", @"Deutsche Nationalhymne", @"Mozart", @"Strauss", @"Puccini", @"Vici", @"schneller/kurze Signalfolge", @"Compact Rufton (Standard)", @"kurze Signalfolge", @"langgezogens Signal"];
+        
+        for (int i = 0; i < self.namesRingtons.count; i++) {
+            UILabel *label = [self.nameRingtonLabelOutletColletion objectAtIndex:i];
+            NSString *text = [self.namesRingtons objectAtIndex:i];
+            [label setText:text];
+        }
         
         [self setGermanLaunguage];
     }

@@ -30,7 +30,6 @@
 		FDE94D4A1DA82A92006C2207 /* TSStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE94D491DA82A92006C2207 /* TSStatusViewController.m */; };
 		FDE94D4D1DA82AAF006C2207 /* TSAudioViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE94D4C1DA82AAF006C2207 /* TSAudioViewController.m */; };
 		FDE94D501DA82AFF006C2207 /* TSHoldAlarmViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE94D4F1DA82AFF006C2207 /* TSHoldAlarmViewController.m */; };
-		FDE94D531DA83431006C2207 /* TSTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE94D521DA83431006C2207 /* TSTableViewCell.m */; };
 		FDEF2B141DA929DC008D6AF6 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDEF2B131DA929DC008D6AF6 /* MessageUI.framework */; };
 /* End PBXBuildFile section */
 
@@ -99,8 +98,6 @@
 		FDE94D4C1DA82AAF006C2207 /* TSAudioViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSAudioViewController.m; sourceTree = "<group>"; };
 		FDE94D4E1DA82AFE006C2207 /* TSHoldAlarmViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSHoldAlarmViewController.h; sourceTree = "<group>"; };
 		FDE94D4F1DA82AFF006C2207 /* TSHoldAlarmViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSHoldAlarmViewController.m; sourceTree = "<group>"; };
-		FDE94D511DA83431006C2207 /* TSTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSTableViewCell.h; sourceTree = "<group>"; };
-		FDE94D521DA83431006C2207 /* TSTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSTableViewCell.m; sourceTree = "<group>"; };
 		FDEF2B131DA929DC008D6AF6 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -173,15 +170,6 @@
 			name = App;
 			sourceTree = "<group>";
 		};
-		FDE38C541DAAF80D00D408F2 /* Cell */ = {
-			isa = PBXGroup;
-			children = (
-				FDE94D511DA83431006C2207 /* TSTableViewCell.h */,
-				FDE94D521DA83431006C2207 /* TSTableViewCell.m */,
-			);
-			name = Cell;
-			sourceTree = "<group>";
-		};
 		FDE38C551DAAF81E00D408F2 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
@@ -225,7 +213,6 @@
 			isa = PBXGroup;
 			children = (
 				FDE38C531DAAF7FD00D408F2 /* App */,
-				FDE38C541DAAF80D00D408F2 /* Cell */,
 				FDE38C551DAAF81E00D408F2 /* Manager */,
 				FDE38C561DAAFB4400D408F2 /* Catigory */,
 				FDE38C521DAAF7EB00D408F2 /* Controllers */,
@@ -411,7 +398,6 @@
 			files = (
 				FDE94D351DA7C76F006C2207 /* TSSettingsViewController.m in Sources */,
 				FDE94D311DA7BF02006C2207 /* TSMeinViewController.m in Sources */,
-				FDE94D531DA83431006C2207 /* TSTableViewCell.m in Sources */,
 				FDE94D4D1DA82AAF006C2207 /* TSAudioViewController.m in Sources */,
 				FDE94D471DA826F1006C2207 /* TSTimeDateViewController.m in Sources */,
 				FDE94D381DA7D2FA006C2207 /* TSSOSViewController.m in Sources */,
