@@ -162,6 +162,8 @@
 
     self.clickImage = [UIImage imageNamed:@"click"];
     self.noclickImage = [UIImage imageNamed:@"noclick"];
+    
+    self.counterComand = 0;
 }
 
 
@@ -260,13 +262,13 @@
         if (!self.sensorSettingsVoice)
         {
             NSInteger valueVoice = [self.userDefaults integerForKey:@"valueVoice"];
-            self.sensorSettingsMovie = [NSString stringWithFormat:@"%ld", (long)valueVoice];
+            self.sensorSettingsVoice = [NSString stringWithFormat:@"%ld", (long)valueVoice];
         }
         
         if (!self.sensorSettingsVibra)
         {
             NSInteger valueVibra = [self.userDefaults integerForKey:@"valueVibra"];
-            self.sensorSettingsMovie = [NSString stringWithFormat:@"%ld", (long)valueVibra];
+            self.sensorSettingsVibra = [NSString stringWithFormat:@"%ld", (long)valueVibra];
         }
         
         
@@ -303,9 +305,25 @@
         }
 
         
+    } else {
+        
+        NSString *title = @"You have not set any of the team on the current screen";
+        
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+                                                                                 message:nil
+                                                                          preferredStyle:(UIAlertControllerStyleAlert)];
+        
+        UIAlertAction *alertActionOk = [UIAlertAction actionWithTitle:@"Ok"
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * _Nonnull action) {
+                                                                  
+                                                                  
+                                                              }];
+        
+        [alertController addAction:alertActionOk];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
     }
-    
-
     
 }
 
@@ -336,41 +354,20 @@
         self.mtbArrayComands = [self configureCommand];
         
     }
-   
-    for (int i = 0; i < [self.mtbArrayComands count]; i++)
-    {
-        NSString *comand = [self.mtbArrayComands objectAtIndex:i];
+ 
+    
+    if ([self.mtbArrayComands count] > 0) {
+        
+        NSString *comand = [self.mtbArrayComands objectAtIndex:0];
         
         MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:comand];
         messageComposeViewController.messageComposeDelegate = self;
         
         ++self.counterComand;
         
-        if ([self.mtbArrayComands count] > 0) {
-            [self.mtbArrayComands removeObjectAtIndex:0];
-        }
-        
         [self dismissViewControllerAnimated:NO completion:nil];
         [self presentViewController:messageComposeViewController animated:YES completion:nil];
-
     }
-    
-//    if (self.counterComand <= [self.mtbArrayComands count] && [self.mtbArrayComands count] > 0) {
-//        
-//        NSString *comand = [self.mtbArrayComands objectAtIndex:self.counterComand];
-//        
-//        MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:comand];
-//        messageComposeViewController.messageComposeDelegate = self;
-//        
-//        ++self.counterComand;
-//        
-//        if ([self.mtbArrayComands count] > 0) {
-//            [self.mtbArrayComands removeObjectAtIndex:0];
-//        }
-//        
-//        [self dismissViewControllerAnimated:NO completion:nil];
-//        [self presentViewController:messageComposeViewController animated:YES completion:nil];
-//    }
     
 }
 
@@ -387,18 +384,22 @@
     else if (result == MessageComposeResultSent) {
         NSLog(@"Message sent");
     
-        if (self.counter <= [self.mtbArrayComands count] - 2) {
+        if ([self.mtbArrayComands count] > 0) {
+            
+            if ([self.mtbArrayComands count] > 0) {
+                [self.mtbArrayComands removeObjectAtIndex:0];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self sendMessage:self.recipient];
-                ++self.counter;
+
             });
         }
     }
     else {
         NSLog(@"Message failed");
     }
-    [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 
