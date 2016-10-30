@@ -92,11 +92,13 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
     [[NSNotificationCenter defaultCenter] postNotificationName:ValuesPickerViewNotification object:valuesPickerView];
     
     [self.navigationController popToRootViewControllerAnimated:YES];
+    
 }
 
 
 - (void)loadSettingsPickerView
 {
+    
     NSInteger valueMovePC = [self.userDefaults integerForKey:@"valueMove"] - 1;
     NSInteger valueVoicePC = [self.userDefaults integerForKey:@"valueVoice"] - 1;
     NSInteger valueVibraPC = [self.userDefaults integerForKey:@"valueVibra"] - 1;

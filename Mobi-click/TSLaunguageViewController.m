@@ -60,6 +60,7 @@
 }
 
 
+/*
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
@@ -96,6 +97,7 @@
     }
     
 }
+*/
 
 
 - (void)configureController

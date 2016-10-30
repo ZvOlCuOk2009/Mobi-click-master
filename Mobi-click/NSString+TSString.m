@@ -27,7 +27,6 @@ static NSString *pin;
 {
     
     NSMutableString *sosComand = [NSMutableString stringWithFormat:@"Set TEL1 "];
-    NSString *prefix = @"0049";
     NSString *sharp = @"#";
     
     NSString *numberOne = [numberPhones objectAtIndex:0];
@@ -47,32 +46,32 @@ static NSString *pin;
     
     
     if ([numberOne length] > 1) {
-        NSString *partComand1 = [NSString stringWithFormat:@"%@ %@%@ ", checkerOne, prefix, numberOne];
+        NSString *partComand1 = [NSString stringWithFormat:@"%@ %@ ", checkerOne, numberOne];
         [sosComand appendString:partComand1];
     }
     
     if ([numberTwo length] > 1) {
-        NSString *partComand2 = [NSString stringWithFormat:@"%@ %@%@ ", checkerTwo, prefix, numberTwo];
+        NSString *partComand2 = [NSString stringWithFormat:@"%@ %@ ", checkerTwo, numberTwo];
         [sosComand appendString:partComand2];
     }
     
     if ([numberThree length] > 1) {
-        NSString *partComand3 = [NSString stringWithFormat:@"%@ %@%@ ", checkerThree, prefix, numberThree];
+        NSString *partComand3 = [NSString stringWithFormat:@"%@ %@ ", checkerThree, numberThree];
         [sosComand appendString:partComand3];
     }
     
     if ([numberFore length] > 1) {
-        NSString *partComand4 = [NSString stringWithFormat:@"%@ %@%@ ", checkerFore, prefix, numberFore];
+        NSString *partComand4 = [NSString stringWithFormat:@"%@ %@ ", checkerFore, numberFore];
         [sosComand appendString:partComand4];
     }
     
     if ([numberFive length] > 1) {
-        NSString *partComand5 = [NSString stringWithFormat:@"%@ %@%@ ", checkerFive, prefix, numberFive];
+        NSString *partComand5 = [NSString stringWithFormat:@"%@ %@ ", checkerFive, numberFive];
         [sosComand appendString:partComand5];
     }
     
     if ([numberSix length] > 1) {
-        NSString *partComand6 = [NSString stringWithFormat:@"%@ %@%@ ", checkerSix, prefix, numberSix];
+        NSString *partComand6 = [NSString stringWithFormat:@"%@ %@ ", checkerSix, numberSix];
         [sosComand appendString:partComand6];
     }
     
@@ -95,7 +94,7 @@ static NSString *pin;
         checkerIsOn = @"C";
     }
     
-    return [NSString stringWithFormat:@"Set TEL %@ 0049%@ %@#", checkerIsOn, numberPhone, pin];
+    return [NSString stringWithFormat:@"Set TEL %@ %@ %@#", checkerIsOn, numberPhone, pin];
 }
 
 
@@ -145,11 +144,7 @@ static NSString *pin;
     else {
         selectRington = @"1";
     }
-//    
-//    if ([determinant isEqualToString:@"-1"]) {
-//        determinant = @"0";
-//    }
-// 
+
     
     return [NSString stringWithFormat:@"SET AUDIO %@ %@ %@ %@ %@ #%@", speaker, microphone, determinant, ringtone, selectRington, pin];
 }
@@ -179,7 +174,7 @@ static NSString *pin;
         
     } else if (determinant == 3) {
         
-        command = [NSString stringWithFormat:@"TEST %@ #%@", zonePV, pin];
+        command = [NSString stringWithFormat:@"TEST GPSZONE %@ #%@", zonePV, pin];
         
     }
     

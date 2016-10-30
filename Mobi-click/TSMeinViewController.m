@@ -40,6 +40,13 @@
 @property (strong, nonatomic) NSString *sensorSettingsVoice;
 @property (strong, nonatomic) NSString *sensorSettingsVibra;
 
+@property (strong, nonatomic) NSMutableArray *mtbArrayComands;
+
+@property (assign, nonatomic) BOOL alarm;
+@property (assign, nonatomic) BOOL move;
+@property (assign, nonatomic) BOOL voice;
+@property (assign, nonatomic) BOOL vibra;
+
 @end
 
 @implementation TSMeinViewController
@@ -143,26 +150,26 @@
     self.telButton.layer.borderColor = BLUE_COLOR.CGColor;
     
     
-    BOOL alarm = [self.userDefaults boolForKey:@"alarm"];
-    BOOL move = [self.userDefaults boolForKey:@"move"];
-    BOOL voice = [self.userDefaults boolForKey:@"voice"];
-    BOOL vibra = [self.userDefaults boolForKey:@"vibra"];
+    self.alarm = [self.userDefaults boolForKey:@"alarm"];
+    self.move = [self.userDefaults boolForKey:@"move"];
+    self.voice = [self.userDefaults boolForKey:@"voice"];
+    self.vibra = [self.userDefaults boolForKey:@"vibra"];
     
-    [self.switchAlarm setOn:alarm animated:YES];
-    [self.switchMove setOn:move animated:YES];
-    [self.switchVoice setOn:voice animated:YES];
-    [self.switchVibra setOn:vibra animated:YES];
+    [self.switchAlarm setOn:self.alarm animated:YES];
+    [self.switchMove setOn:self.move animated:YES];
+    [self.switchVoice setOn:self.voice animated:YES];
+    [self.switchVibra setOn:self.vibra animated:YES];
 
     self.clickImage = [UIImage imageNamed:@"click"];
     self.noclickImage = [UIImage imageNamed:@"noclick"];
 }
 
 
-- (NSArray *)configureCommand
+- (NSMutableArray *)configureCommand
 {
+    
     self.userDefaults = [NSUserDefaults standardUserDefaults];
     NSString *pin = [self.userDefaults objectForKey:@"pin"];
-    
     
     
     NSString *commandAlarm = nil;
@@ -170,33 +177,61 @@
     NSString *commandVoice = nil;
     NSString *commandVibra = nil;
     
-    if (self.switchAlarm.isOn) {
-        commandAlarm = [NSString stringWithFormat:@"SET SECURITY #%@", pin];
-    } else {
-        commandAlarm = [NSString stringWithFormat:@"RESET SECURITY #%@", pin];
+    if (self.alarm != self.switchAlarm.isOn)
+    {
+        if (self.switchAlarm.isOn) {
+            commandAlarm = [NSString stringWithFormat:@"SET SECURITY #%@", pin];
+        } else {
+            commandAlarm = [NSString stringWithFormat:@"RESET SECURITY #%@", pin];
+        }
     }
     
-    if (self.switchMove.isOn) {
-        commandMove = [NSString stringWithFormat:@"SET MOVE %@ #%@", self.sensorSettingsMovie, pin];
-    } else {
-        commandMove = [NSString stringWithFormat:@"RESET MOVE #%@", pin];
+    if (self.move != self.switchMove.isOn)
+    {
+        if (self.switchMove.isOn) {
+            commandMove = [NSString stringWithFormat:@"SET MOVE %@ #%@", self.sensorSettingsMovie, pin];
+        } else {
+            commandMove = [NSString stringWithFormat:@"RESET MOVE #%@", pin];
+        }
     }
     
-    if (self.switchVoice.isOn) {
-        commandVoice = [NSString stringWithFormat:@"SET VOICE %@ #%@", self.sensorSettingsVoice, pin];
-    } else {
-        commandVoice = [NSString stringWithFormat:@"RESET VOICE #%@", pin];
+    if (self.voice != self.switchVoice.isOn)
+    {
+        if (self.switchVoice.isOn) {
+            commandVoice = [NSString stringWithFormat:@"SET VOICE %@ #%@", self.sensorSettingsVoice, pin];
+        } else {
+            commandVoice = [NSString stringWithFormat:@"RESET VOICE #%@", pin];
+        }
     }
     
-    if (self.switchVibra.isOn) {
-        commandVibra = [NSString stringWithFormat:@"SET VIBRA %@ #%@", self.sensorSettingsVibra, pin];
-    } else {
-        commandVibra = [NSString stringWithFormat:@"RESET VIBRA #%@", pin];
+    if (self.vibra != self.switchVibra.isOn)
+    {
+        if (self.switchVibra.isOn) {
+            commandVibra = [NSString stringWithFormat:@"SET VIBRA %@ #%@", self.sensorSettingsVibra, pin];
+        } else {
+            commandVibra = [NSString stringWithFormat:@"RESET VIBRA #%@", pin];
+        }
     }
     
     
-    NSArray *comands = @[commandAlarm, commandMove, commandVoice, commandVibra];
-        
+    NSMutableArray *comands = [NSMutableArray array];
+    
+    if (commandAlarm) {
+        [comands addObject:commandAlarm];
+    }
+    
+    if (commandMove) {
+        [comands addObject:commandMove];
+    }
+
+    if (commandVoice) {
+        [comands addObject:commandVoice];
+    }
+    
+    if (commandVibra) {
+        [comands addObject:commandVibra];
+    }
+    
     return comands;
 }
 
@@ -206,43 +241,72 @@
 
 - (IBAction)actionSendButton:(id)sender
 {
-
-    self.sensorSettingsMovie = [self.valuesDictionary objectForKey:@"valueMove"];
-    self.sensorSettingsVoice = [self.valuesDictionary objectForKey:@"valueVoice"];
-    self.sensorSettingsVibra = [self.valuesDictionary objectForKey:@"valueVibra"];
     
-    if (self.sensorSettingsMovie && self.sensorSettingsVibra && self.sensorSettingsVoice) {
+    if (self.alarm != self.switchAlarm.isOn || self.move != self.switchMove.isOn ||
+        self.voice != self.switchVoice.isOn || self.vibra != self.switchVibra.isOn)
+    {
         
-        self.contactPicker = [[CNContactPickerViewController alloc] init];
-        self.contactPicker.delegate = self;
+        self.sensorSettingsMovie = [self.valuesDictionary objectForKey:@"valueMove"];
+        self.sensorSettingsVoice = [self.valuesDictionary objectForKey:@"valueVoice"];
+        self.sensorSettingsVibra = [self.valuesDictionary objectForKey:@"valueVibra"];
         
-        [self presentViewController:self.contactPicker animated:YES completion:nil];
         
-        self.counter = 0;
-        self.counterComand = 0;
+        if (!self.sensorSettingsMovie)
+        {
+            NSInteger valueMovie = [self.userDefaults integerForKey:@"valueMove"];
+            self.sensorSettingsMovie = [NSString stringWithFormat:@"%ld", (long)valueMovie];
+        }
         
-    } else {
+        if (!self.sensorSettingsVoice)
+        {
+            NSInteger valueVoice = [self.userDefaults integerForKey:@"valueVoice"];
+            self.sensorSettingsMovie = [NSString stringWithFormat:@"%ld", (long)valueVoice];
+        }
         
-        NSString *title = @"For the formation of command, you need to confirm the settings on the screen ""Sensor""";
+        if (!self.sensorSettingsVibra)
+        {
+            NSInteger valueVibra = [self.userDefaults integerForKey:@"valueVibra"];
+            self.sensorSettingsMovie = [NSString stringWithFormat:@"%ld", (long)valueVibra];
+        }
         
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
-                                                                                 message:nil
-                                                                          preferredStyle:(UIAlertControllerStyleAlert)];
-     
-        UIAlertAction *alertActionOk = [UIAlertAction actionWithTitle:@"Ok"
-                                                                style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction * _Nonnull action) {
-                                                                  
-                                                                  TSSensorViewController *sensorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"TSSensorViewController"];
-                                                                  [self.navigationController pushViewController:sensorViewController animated:YES];
-                                                                  
-                                                              }];
         
-        [alertController addAction:alertActionOk];
+        if (self.sensorSettingsMovie && self.sensorSettingsVibra && self.sensorSettingsVoice) {
+            
+            self.contactPicker = [[CNContactPickerViewController alloc] init];
+            self.contactPicker.delegate = self;
+            
+            [self presentViewController:self.contactPicker animated:YES completion:nil];
+            
+            self.counter = 0;
+            self.counterComand = 0;
+            
+        } else {
+            
+            NSString *title = @"For the formation of command, you need to confirm the settings on the screen ""Sensor""";
+            
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+                                                                                     message:nil
+                                                                              preferredStyle:(UIAlertControllerStyleAlert)];
+            
+            UIAlertAction *alertActionOk = [UIAlertAction actionWithTitle:@"Ok"
+                                                                    style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * _Nonnull action) {
+                                                                      
+                                                                      TSSensorViewController *sensorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"TSSensorViewController"];
+                                                                      [self.navigationController pushViewController:sensorViewController animated:YES];
+                                                                      
+                                                                  }];
+            
+            [alertController addAction:alertActionOk];
+            
+            [self presentViewController:alertController animated:YES completion:nil];
+        }
+
         
-        [self presentViewController:alertController animated:YES completion:nil];
     }
-  
+    
+
+    
 }
 
 
@@ -267,19 +331,46 @@
 
 - (void)sendMessage:(NSArray *)recipients
 {
-    self.comands = [self configureCommand];
     
-    if (self.counterComand <= [self.comands count]) {
+    if (self.counterComand == 0) {
+        self.mtbArrayComands = [self configureCommand];
         
-        NSString *comand = [self.comands objectAtIndex:self.counterComand];
+    }
+   
+    for (int i = 0; i < [self.mtbArrayComands count]; i++)
+    {
+        NSString *comand = [self.mtbArrayComands objectAtIndex:i];
         
         MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:comand];
         messageComposeViewController.messageComposeDelegate = self;
         
         ++self.counterComand;
+        
+        if ([self.mtbArrayComands count] > 0) {
+            [self.mtbArrayComands removeObjectAtIndex:0];
+        }
+        
         [self dismissViewControllerAnimated:NO completion:nil];
         [self presentViewController:messageComposeViewController animated:YES completion:nil];
+
     }
+    
+//    if (self.counterComand <= [self.mtbArrayComands count] && [self.mtbArrayComands count] > 0) {
+//        
+//        NSString *comand = [self.mtbArrayComands objectAtIndex:self.counterComand];
+//        
+//        MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:comand];
+//        messageComposeViewController.messageComposeDelegate = self;
+//        
+//        ++self.counterComand;
+//        
+//        if ([self.mtbArrayComands count] > 0) {
+//            [self.mtbArrayComands removeObjectAtIndex:0];
+//        }
+//        
+//        [self dismissViewControllerAnimated:NO completion:nil];
+//        [self presentViewController:messageComposeViewController animated:YES completion:nil];
+//    }
     
 }
 
@@ -296,7 +387,7 @@
     else if (result == MessageComposeResultSent) {
         NSLog(@"Message sent");
     
-        if (self.counter <= [self.comands count] - 2) {
+        if (self.counter <= [self.mtbArrayComands count] - 2) {
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self sendMessage:self.recipient];

@@ -84,6 +84,14 @@
 {
     [super viewWillAppear:animated];
     [self setLaunguage];
+    
+    if (self.counterComand == 2)
+    {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.counterComand = 0;
+            
+        });
+    }
 }
 
 
@@ -140,6 +148,9 @@
     self.switchChekerSixRowTwo = NO;
     self.switchChekerSevenRowTwo = NO;
 
+    
+    self.counter = 0;
+    
 }
 
 
@@ -248,7 +259,7 @@
         NSString *toHours = [position objectAtIndex:2];
         NSString *toMinutes  = [position objectAtIndex:3];
         
-        NSString *intermediateString = [NSString stringWithFormat:@"​SET HOLDALARM %@ %@ %@ %@ X #%@",fromHours, fromMinutes, toHours, toMinutes, pin];
+        NSString *intermediateString = [NSString stringWithFormat:@"​SET HOLDALARM %@ %@ %@ %@ #%@",fromHours, fromMinutes, toHours, toMinutes, pin];
         
         if ([selectDays count] > 0) {
             
@@ -260,12 +271,37 @@
             }
             
             NSArray *components = [intermediateString componentsSeparatedByString:@" "];
-            holdAlarm = [NSString stringWithFormat:@"%@ %@ %@ %@ %@ %@ %@%@", [components objectAtIndex:0], [components objectAtIndex:1], [components objectAtIndex:2], [components objectAtIndex:3], [components objectAtIndex:4], [components objectAtIndex:5], concatenateStringBottom, [components objectAtIndex:7]];
+            holdAlarm = [NSString stringWithFormat:@"%@ %@ %@ %@ %@ %@ %@%@", [components objectAtIndex:0], [components objectAtIndex:1], [components objectAtIndex:2], [components objectAtIndex:3], [components objectAtIndex:4], [components objectAtIndex:5], concatenateStringBottom, [components objectAtIndex:6]];
+            
+        } else {
+            
+            holdAlarm = intermediateString;
+        }
+        
+        if (self.counter > 0) {
+            
+            NSMutableString *repeatedHoldAlarm = [NSMutableString stringWithString:holdAlarm];
+            [repeatedHoldAlarm insertString:@"2" atIndex:14];
+            holdAlarm = repeatedHoldAlarm;
+            
+            self.counter = 0;
+        } else {
+            ++self.counter;
         }
         
     } else {
         
         holdAlarm = [NSString stringWithFormat:@"RESET HOLDALARM #%@", pin];
+        
+        if (self.counter > 0) {
+            
+            holdAlarm = [NSString stringWithFormat:@"RESET HOLDALARM2 #%@", pin];
+            
+            self.counter = 0;
+        } else {
+            ++self.counter;
+        }
+        
     }
     
     return holdAlarm;
@@ -600,6 +636,7 @@
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self sendMessage:self.recipient];
+                
             });
         }
     }

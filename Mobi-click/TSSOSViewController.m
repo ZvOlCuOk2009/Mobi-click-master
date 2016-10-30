@@ -351,34 +351,72 @@
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     
-    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    NSCharacterSet* validationSet = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
+    NSArray* components = [string componentsSeparatedByCharactersInSet:validationSet];
     
-    if ([newString length] >= 10) {
-        return  NO;
+    if ([components count] > 1) {
+        return NO;
     }
     
-    if (textField == self.numberTelTextFieldOne ||
-        textField == self.numberTelTextFieldTwo ||
-        textField == self.numberTelTextFieldThree ||
-        textField == self.numberTelTextFieldFore ||
-        textField == self.numberTelTextFieldFive ||
-        textField == self.numberTelTextFieldSix) {
-        
-        NSCharacterSet *myCharSet = [NSCharacterSet characterSetWithCharactersInString:VALID_CHARACTER];
-        
-        for (int i = 0; i < [string length]; i++)
-        {
-            unichar c = [string characterAtIndex:i];
-            if (![myCharSet characterIsMember:c])
-            {
-                return NO;
-            }
-        }
-        
-        return YES;
+    NSString* newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    
+    NSArray* validComponents = [newString componentsSeparatedByCharactersInSet:validationSet];
+    
+    newString = [validComponents componentsJoinedByString:@""];
+    
+    static const int localNumberMaxLength = 7;
+    static const int areaCodeMaxLength = 3;
+    static const int countryCodeMaxLength = 2;
+    
+    if ([newString length] > localNumberMaxLength + areaCodeMaxLength + countryCodeMaxLength) {
+        return NO;
     }
     
-    return YES;
+    
+    NSMutableString* resultString = [NSMutableString string];
+    
+
+    NSInteger localNumberLength = MIN([newString length], localNumberMaxLength);
+    
+    
+    if (localNumberLength > 0) {
+        
+        NSString* number = [newString substringFromIndex:(int)[newString length] - localNumberLength];
+        
+        [resultString appendString:number];
+        
+    }
+    
+    if ([newString length] > localNumberMaxLength) {
+        
+        NSInteger areaCodeLength = MIN((int)[newString length] - localNumberMaxLength, areaCodeMaxLength);
+        
+        NSRange areaRange = NSMakeRange((int)[newString length] - localNumberMaxLength - areaCodeLength, areaCodeLength);
+        
+        NSString* area = [newString substringWithRange:areaRange];
+        
+        [resultString insertString:area atIndex:0];
+    }
+
+     
+    if ([newString length] > localNumberMaxLength + areaCodeMaxLength) {
+        
+        NSInteger countryCodeLength = MIN((int)[newString length] - localNumberMaxLength - areaCodeMaxLength, countryCodeMaxLength);
+        
+        NSRange countryCodeRange = NSMakeRange(0, countryCodeLength);
+        
+        NSString* countryCode = [newString substringWithRange:countryCodeRange];
+        
+        countryCode = [NSString stringWithFormat:@"+%@", countryCode];
+        
+        [resultString insertString:countryCode atIndex:0];
+    }
+    
+    
+    textField.text = resultString;
+    
+    return NO;
+    
 }
 
 
