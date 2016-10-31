@@ -17,6 +17,7 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 @property (weak, nonatomic) IBOutlet UIPickerView *movePickerView;
 @property (weak, nonatomic) IBOutlet UIPickerView *voicePickerView;
 @property (weak, nonatomic) IBOutlet UIPickerView *vibraPickerView;
+
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *moveLabel;
 @property (weak, nonatomic) IBOutlet UILabel *voiceLabel;
@@ -65,6 +66,7 @@ NSString *const ValuesPickerViewNotification = @"ValuesPickerViewNotification";
 
 - (IBAction)actionSendButton:(id)sender
 {
+    
     NSString *valuePickerViewMove = [self pickerView:self.movePickerView
                            titleForRow:[self.movePickerView selectedRowInComponent:0] forComponent:0];
     

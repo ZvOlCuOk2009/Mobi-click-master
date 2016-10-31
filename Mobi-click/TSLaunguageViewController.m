@@ -208,7 +208,7 @@
 #pragma mark - Configure comand
 
 
-- (NSArray *)configureCommand:(NSInteger)recognizer
+- (NSMutableArray *)configureCommand:(NSInteger)recognizer
 {
     NSString *currentValueLaunguage = [self currentValuePickerViewLaunguage];
     
@@ -273,12 +273,12 @@
 {
     
     if (self.counterComand == 0) {
-        self.comands = [self configureCommand:1];
+        self.commands = [self configureCommand:1];
     }
     
-    if (self.counterComand <= [self.comands count]) {
+    if (self.counterComand <= [self.commands count]) {
         
-        NSString *comand = [self.comands objectAtIndex:self.counterComand];
+        NSString *comand = [self.commands objectAtIndex:self.counterComand];
     
         MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:comand];
         messageComposeViewController.messageComposeDelegate = self;
@@ -305,7 +305,7 @@
         NSLog(@"Message sent");
         [self setPinToLabel];
         self.textFieldNewPin.text = @"";
-        NSInteger countComand = [self.comands count] - 1;
+        NSInteger countComand = [self.commands count] - 1;
         if (self.counter < countComand) {
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

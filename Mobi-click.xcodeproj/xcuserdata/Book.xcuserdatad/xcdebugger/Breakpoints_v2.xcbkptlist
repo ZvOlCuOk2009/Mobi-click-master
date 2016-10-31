@@ -22,16 +22,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Mobi-click/TSSensorViewController.m"
-            timestampString = "499558096.841156"
+            filePath = "Mobi-click/TSExtraViewController.m"
+            timestampString = "499610304.31957"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-            endingLineNumber = "87"
-            landmarkName = "-actionSendButton:"
+            startingLineNumber = "304"
+            endingLineNumber = "304"
+            landmarkName = "-configureCommand"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

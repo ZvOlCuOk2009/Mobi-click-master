@@ -154,7 +154,7 @@
 }
 
 
-- (NSArray *)configureCommand
+- (NSMutableArray *)configureCommand
 {
     
     NSMutableArray *comands = [NSMutableArray array];
@@ -604,11 +604,11 @@
 - (void)sendMessage:(NSArray *)recipients
 {
     
-    self.comands = [self configureCommand];
+    self.commands = [self configureCommand];
     
-    if (self.counterComand <= [self.comands count] - 1) {
+    if (self.counterComand <= [self.commands count] - 1) {
 
-        MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString stringWithFormat:@"%@", [self.comands objectAtIndex:self.counterComand]]];
+        MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:[NSString stringWithFormat:@"%@", [self.commands objectAtIndex:self.counterComand]]];
         messageComposeViewController.messageComposeDelegate = self;
         
         ++self.counterComand;
@@ -632,7 +632,7 @@
     else if (result == MessageComposeResultSent) {
         NSLog(@"Message sent");
         
-        if (self.counterComand <= [self.comands count]) {
+        if (self.counterComand <= [self.commands count]) {
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self sendMessage:self.recipient];

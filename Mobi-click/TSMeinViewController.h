@@ -20,7 +20,7 @@
 @property (strong, nonatomic) UIImage * noclickImage;
 
 @property (strong, nonatomic) NSArray *recipient;
-@property (strong, nonatomic) NSArray *comands;
+@property (strong, nonatomic) NSMutableArray *commands;
 @property (strong, nonatomic) NSUserDefaults *userDefaults;
 
 @property (assign, nonatomic) NSInteger counter;

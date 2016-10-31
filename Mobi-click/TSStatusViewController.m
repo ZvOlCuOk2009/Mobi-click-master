@@ -44,9 +44,17 @@
 @property (strong, nonatomic) NSString *valuePickerViewGps;
 @property (strong, nonatomic) NSString *valuePickerViewEdleAlarm;
 
+@property (strong, nonatomic) NSString *intervalCommand;
+
 @property (assign, nonatomic) NSInteger regognizer;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+
+@property (assign, nonatomic) BOOL lock;
+@property (assign, nonatomic) BOOL repeat;
+@property (assign, nonatomic) BOOL gsm;
+@property (assign, nonatomic) BOOL gps;
+@property (assign, nonatomic) BOOL idlealarm;
 
 @end
 
@@ -66,6 +74,13 @@
     [super viewWillAppear:animated];
     [self setLaunguage];
     [self loadSettingsPickerView];
+}
+
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self savePickerViewAndSwitchPositionCommand];
 }
 
 
@@ -94,19 +109,63 @@
     [self.idieAlarmPickerView selectRow:valueEdlePC inComponent:0 animated:NO];
     
     BOOL interval = [self.userDefaults boolForKey:@"switchInterval"];
-    BOOL lock = [self.userDefaults boolForKey:@"switchLock"];
-    BOOL repeat = [self.userDefaults boolForKey:@"switchRepeat"];
-    BOOL gsm = [self.userDefaults boolForKey:@"switchGsmAlarm"];
-    BOOL gps = [self.userDefaults boolForKey:@"switchGpsAlarm"];
-    BOOL idlealarm = [self.userDefaults boolForKey:@"switchidlealarm"];
+    self.lock = [self.userDefaults boolForKey:@"switchLock"];
+    self.repeat = [self.userDefaults boolForKey:@"switchRepeat"];
+    self.gsm = [self.userDefaults boolForKey:@"switchGsmAlarm"];
+    self.gps = [self.userDefaults boolForKey:@"switchGpsAlarm"];
+    self.idlealarm = [self.userDefaults boolForKey:@"switchidlealarm"];
     
     [self.switchInterval setOn:interval animated:YES];
-    [self.switchLock setOn:lock animated:YES];
-    [self.switchRepeat setOn:repeat animated:YES];
-    [self.switchGsmAlarm setOn:gsm animated:YES];
-    [self.switchGpsAlarm setOn:gps animated:YES];
-    [self.switchidlealarm setOn:idlealarm animated:YES];
+    [self.switchLock setOn:self.lock animated:YES];
+    [self.switchRepeat setOn:self.repeat animated:YES];
+    [self.switchGsmAlarm setOn:self.gsm animated:YES];
+    [self.switchGpsAlarm setOn:self.gps animated:YES];
+    [self.switchidlealarm setOn:self.idlealarm animated:YES];
  
+}
+
+
+
+#pragma mark - save picker view and switch position
+
+
+- (void)savePickerViewAndSwitchPositionCommand
+{
+
+    NSString *valuePickerViewInterval = [self pickerView:self.intervalPickerView titleForRow:[self.intervalPickerView selectedRowInComponent:0] forComponent:0];
+    
+    NSString *valuePickerViewAlarmRepeat = [self pickerView:self.alarmWiedPickerView titleForRow:[self.alarmWiedPickerView selectedRowInComponent:0] forComponent:0];
+    
+    NSString *valuePickerViewGsm = [self pickerView:self.gsmAlarmOnePickerView titleForRow:[self.gsmAlarmOnePickerView selectedRowInComponent:0] forComponent:0];
+    
+    NSString *valuePickerViewGps = [self pickerView:self.gsmAlarmTwoPickerView titleForRow:[self.gsmAlarmTwoPickerView selectedRowInComponent:0] forComponent:0];
+    
+    NSString *valuePickerViewEdleAlarm = [self pickerView:self.idieAlarmPickerView titleForRow:[self.idieAlarmPickerView selectedRowInComponent:0] forComponent:0];
+    
+    
+    NSInteger interval = [valuePickerViewInterval integerValue];
+    NSInteger repeatAlarm = [valuePickerViewAlarmRepeat integerValue];
+    NSInteger gsm = [valuePickerViewGsm integerValue];
+    NSInteger gps = [valuePickerViewGps integerValue];
+    NSInteger edleAlarm = [valuePickerViewEdleAlarm integerValue];
+    
+    
+    [self.userDefaults setInteger:interval forKey:@"valueInterval"];
+    [self.userDefaults setInteger:repeatAlarm forKey:@"valueRepeatAlarm"];
+    [self.userDefaults setInteger:gsm forKey:@"valueGSM"];
+    [self.userDefaults setInteger:gps forKey:@"valueGPS"];
+    [self.userDefaults setInteger:edleAlarm forKey:@"valueEdleAlarm"];
+    
+    
+    [self.userDefaults setBool:self.switchInterval.isOn forKey:@"switchInterval"];
+    [self.userDefaults setBool:self.switchLock.isOn forKey:@"switchLock"];
+    [self.userDefaults setBool:self.switchRepeat.isOn forKey:@"switchRepeat"];
+    [self.userDefaults setBool:self.switchGsmAlarm.isOn forKey:@"switchGsmAlarm"];
+    [self.userDefaults setBool:self.switchGpsAlarm.isOn forKey:@"switchGpsAlarm"];
+    [self.userDefaults setBool:self.switchidlealarm.isOn forKey:@"switchidlealarm"];
+    
+    [self.userDefaults synchronize];
+    
 }
 
 
@@ -255,58 +314,60 @@
 
 - (IBAction)ationTestButton:(id)sender
 {
+    
+    self.intervalCommand = [self configureCommandStatus];
+    
     self.contactPicker = [[CNContactPickerViewController alloc] init];
     self.contactPicker.delegate = self;
     
     [self presentViewController:self.contactPicker animated:YES completion:nil];
     
-    self.regognizer = 2;
+    self.regognizer = 1;
 }
 
 
 - (IBAction)ationSendButton:(id)sender
 {
     
-    self.contactPicker = [[CNContactPickerViewController alloc] init];
-    self.contactPicker.delegate = self;
+    BOOL switchLock = self.switchLock.isOn;
+    BOOL switchRepeat = self.switchRepeat.isOn;
+    BOOL switchGsm = self.switchGsmAlarm.isOn;
+    BOOL switchGps = self.switchGpsAlarm.isOn;
+    BOOL switchIdlealarm = self.switchidlealarm.isOn;
     
-    [self presentViewController:self.contactPicker animated:YES completion:nil];
-    
-    self.counter = 0;
-    self.counterComand = 0;
-    self.regognizer = 1;
-    
-}
-
-
-#pragma mark - save picker view and switch position
-
-
-- (void)savePickerViewAndSwitchPositionCommand
-{
-    
-    NSInteger interval = [self.valuePickerViewInterval integerValue];
-    NSInteger repeatAlarm = [self.valuePickerViewRepeat integerValue];
-    NSInteger gsm = [self.valuePickerViewGsm integerValue];
-    NSInteger gps = [self.valuePickerViewGps integerValue];
-    NSInteger edleAlarm = [self.valuePickerViewEdleAlarm integerValue];
-    
-    
-    [self.userDefaults setInteger:interval forKey:@"valueInterval"];
-    [self.userDefaults setInteger:repeatAlarm forKey:@"valueRepeatAlarm"];
-    [self.userDefaults setInteger:gsm forKey:@"valueGSM"];
-    [self.userDefaults setInteger:gps forKey:@"valueGPS"];
-    [self.userDefaults setInteger:edleAlarm forKey:@"valueEdleAlarm"];
-    
-    
-    [self.userDefaults setBool:self.switchInterval.isOn forKey:@"switchInterval"];
-    [self.userDefaults setBool:self.switchLock.isOn forKey:@"switchLock"];
-    [self.userDefaults setBool:self.switchRepeat.isOn forKey:@"switchRepeat"];
-    [self.userDefaults setBool:self.switchGsmAlarm.isOn forKey:@"switchGsmAlarm"];
-    [self.userDefaults setBool:self.switchGpsAlarm.isOn forKey:@"switchGpsAlarm"];
-    [self.userDefaults setBool:self.switchidlealarm.isOn forKey:@"switchidlealarm"];
-    
-    [self.userDefaults synchronize];
+    if (self.lock != switchLock || self.repeat != switchRepeat ||
+        self.gsm != switchGsm || self.gps != switchGps ||
+        self.idlealarm != switchIdlealarm)
+    {
+        
+        self.contactPicker = [[CNContactPickerViewController alloc] init];
+        self.contactPicker.delegate = self;
+        
+        [self presentViewController:self.contactPicker animated:YES completion:nil];
+        
+        self.counter = 0;
+        self.counterComand = 0;
+        self.regognizer = 2;
+        
+    } else {
+        
+        NSString *title = @"You have not set any of the team on the current screen";
+        
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+                                                                                 message:nil
+                                                                          preferredStyle:(UIAlertControllerStyleAlert)];
+        
+        UIAlertAction *alertActionOk = [UIAlertAction actionWithTitle:@"Ok"
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * _Nonnull action) {
+                                                                  
+                                                                  
+                                                              }];
+        
+        [alertController addAction:alertActionOk];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
     
 }
 
@@ -314,16 +375,16 @@
 #pragma mark - Configuration comand
 
 
-- (NSArray *)configureCommand
+- (NSMutableArray *)configureCommand
 {
     
     NSString *pin = [self.userDefaults objectForKey:@"pin"];
     
-    NSString *lock = nil;
-    NSString *repeatAlarm = nil;
-    NSString *gsm = nil;
-    NSString *gps = nil;
-    NSString *edleAlarm = nil;
+    NSString *commandLock = nil;
+    NSString *commandRepeatAlarm = nil;
+    NSString *commandGsm = nil;
+    NSString *commandGps = nil;
+    NSString *commandEdleAlarm = nil;
     
     
     self.valuePickerViewRepeat = [self pickerView:self.alarmWiedPickerView
@@ -338,40 +399,82 @@
     self.valuePickerViewEdleAlarm = [self pickerView:self.idieAlarmPickerView
                                              titleForRow:[self.idieAlarmPickerView selectedRowInComponent:0] forComponent:0];
     
+    
+    
+    if (self.lock != self.switchLock.isOn)
+    {
+        if (self.switchLock.isOn) {
+            commandLock = [NSString stringWithFormat:@"​SET LOCK #%@", pin];
+        } else {
+            commandLock = [NSString stringWithFormat:@"RESET LOCK #%@", pin];
+        }
+    }
+    
    
-    if (self.switchLock.isOn) {
-        lock = [NSString stringWithFormat:@"​SET LOCK #%@", pin];
-    } else {
-        lock = [NSString stringWithFormat:@"RESET LOCK #%@", pin];
+    if (self.repeat != self.switchRepeat.isOn)
+    {
+        if (self.switchRepeat.isOn) {
+            commandRepeatAlarm = [NSString stringWithFormat:@"​SET REPEAT %@ #%@", self.valuePickerViewRepeat, pin];
+        } else {
+            commandRepeatAlarm = [NSString stringWithFormat:@"RESET REPEAT #%@", pin];
+        }
     }
     
-    if (self.switchRepeat.isOn) {
-        repeatAlarm = [NSString stringWithFormat:@"​SET REPEAT %@ #%@", self.valuePickerViewRepeat, pin];
-    } else {
-        repeatAlarm = [NSString stringWithFormat:@"RESET REPEAT #%@", pin];
+    
+    if (self.gsm != self.switchGsmAlarm.isOn)
+    {
+        if (self.switchGsmAlarm.isOn) {
+            commandGsm = [NSString stringWithFormat:@"​SET GSMALARM %@ #%@", self.valuePickerViewGsm, pin];
+        } else {
+            commandGsm = [NSString stringWithFormat:@"RESET GSMALARM #%@", pin];
+        }
     }
     
-    if (self.switchGsmAlarm.isOn) {
-        gsm = [NSString stringWithFormat:@"​SET GSMALARM %@ #%@", self.valuePickerViewGsm, pin];
-    } else {
-        gsm = [NSString stringWithFormat:@"RESET GSMALARM #%@", pin];
+    
+    if (self.gps != self.switchGpsAlarm.isOn)
+    {
+        if (self.switchGpsAlarm.isOn) {
+            commandGps = [NSString stringWithFormat:@"​SET GPSALARM %@ #%@", self.valuePickerViewGps, pin];
+        } else {
+            commandGps = [NSString stringWithFormat:@"RESET GPSALARM #%@", pin];
+        }
     }
     
-    if (self.switchGpsAlarm.isOn) {
-        gps = [NSString stringWithFormat:@"​SET GPSALARM %@ #%@", self.valuePickerViewGps, pin];
-    } else {
-        gps = [NSString stringWithFormat:@"RESET GPSALARM #%@", pin];
+    
+    if (self.idlealarm != self.switchidlealarm.isOn)
+    {
+        if (self.switchidlealarm.isOn) {
+            commandEdleAlarm = [NSString stringWithFormat:@"​SET IDLEALARM %@ #%@", self.valuePickerViewEdleAlarm, pin];
+        } else {
+            commandEdleAlarm = [NSString stringWithFormat:@"RESET IDLEALARM #%@", pin];
+        }
     }
     
-    if (self.switchidlealarm.isOn) {
-        edleAlarm = [NSString stringWithFormat:@"​SET IDLEALARM %@ #%@", self.valuePickerViewEdleAlarm, pin];
-    } else {
-        edleAlarm = [NSString stringWithFormat:@"RESET IDLEALARM #%@", pin];
+    
+    NSMutableArray *commands = [NSMutableArray array];
+    
+    if (commandLock) {
+        [commands addObject:commandLock];
     }
     
-    NSArray *comands = @[lock, repeatAlarm, gsm, gps, edleAlarm];
+    if (commandRepeatAlarm) {
+        [commands addObject:commandRepeatAlarm];
+    }
     
-    return comands;
+    if (commandGsm) {
+        [commands addObject:commandGsm];
+    }
+    
+    if (commandGps) {
+        [commands addObject:commandGps];
+    }
+    
+    if (commandEdleAlarm) {
+        [commands addObject:commandEdleAlarm];
+    }
+
+    
+    return commands;
 }
 
 
@@ -415,19 +518,23 @@
 
 - (void)sendMessage:(NSArray *)recipients
 {
-    self.comands = [self configureCommand];
     
-    if (self.counterComand <= [self.comands count]) {
+    if (self.counterComand == 0)
+    {
+        self.commands = [self configureCommand];
+    }
+    
+    if ([self.commands count] > 0 || self.intervalCommand) {
         
-        NSString *comand = nil;
+        NSString *command = nil;
         
         if (self.regognizer == 1) {
-            comand = [self.comands objectAtIndex:self.counterComand];
+            command = [self configureCommandStatus];
         } else if (self.regognizer == 2) {
-            comand = [self configureCommandStatus];
+            command = [self.commands objectAtIndex:0];
         }
         
-        MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:comand];
+        MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:command];
         messageComposeViewController.messageComposeDelegate = self;
         
         ++self.counterComand;
@@ -435,7 +542,7 @@
         [self presentViewController:messageComposeViewController animated:YES completion:nil];
         [self savePickerViewAndSwitchPositionCommand];
     }
-    
+
 }
 
 
@@ -445,24 +552,33 @@
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller
                  didFinishWithResult:(MessageComposeResult)result
 {
+    
     if (result == MessageComposeResultCancelled) {
         NSLog(@"Message cancelled");
     }
     else if (result == MessageComposeResultSent) {
         NSLog(@"Message sent");
         
-        if (self.counter <= [self.comands count] - 2 && self.regognizer == 1) {
+        if (self.intervalCommand)
+        {
+            self.intervalCommand = nil;
+        }
+        
+        if ([self.commands count] > 0 && self.regognizer == 2) {
+            
+            [self.commands removeObjectAtIndex:0];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self sendMessage:self.recipient];
-                ++self.counter;
             });
         }
+        
     }
     else {
         NSLog(@"Message failed");
     }
     [self dismissViewControllerAnimated:YES completion:nil];
+    
 }
 
 

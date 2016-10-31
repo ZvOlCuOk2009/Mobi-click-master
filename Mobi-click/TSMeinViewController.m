@@ -40,8 +40,6 @@
 @property (strong, nonatomic) NSString *sensorSettingsVoice;
 @property (strong, nonatomic) NSString *sensorSettingsVibra;
 
-@property (strong, nonatomic) NSMutableArray *mtbArrayComands;
-
 @property (assign, nonatomic) BOOL alarm;
 @property (assign, nonatomic) BOOL move;
 @property (assign, nonatomic) BOOL voice;
@@ -75,6 +73,7 @@
 {
     [super viewWillAppear:animated];
     [self setLaunguage];
+    [self loadPositionSwitchs];
     
     NSString *nameDevice = [self.userDefaults objectForKey:@"nameDevice"];
     [self.deviceButton setTitle:nameDevice forState:UIControlStateNormal];
@@ -118,11 +117,25 @@
 
 - (void)savePositionsSwitchs
 {
-    [self.userDefaults setBool:self.switchAlarm.isOn forKey:@"alarm"];
-    [self.userDefaults setBool:self.switchMove.isOn forKey:@"move"];
-    [self.userDefaults setBool:self.switchVoice.isOn forKey:@"voice"];
-    [self.userDefaults setBool:self.switchVibra.isOn forKey:@"vibra"];
+    [self.userDefaults setBool:self.switchAlarm.isOn forKey:@"switchAlarm"];
+    [self.userDefaults setBool:self.switchMove.isOn forKey:@"switchMove"];
+    [self.userDefaults setBool:self.switchVoice.isOn forKey:@"switchVoice"];
+    [self.userDefaults setBool:self.switchVibra.isOn forKey:@"switchVibra"];
     [self.userDefaults synchronize];
+}
+
+
+- (void)loadPositionSwitchs
+{
+    self.alarm = [self.userDefaults boolForKey:@"switchAlarm"];
+    self.move = [self.userDefaults boolForKey:@"switchMove"];
+    self.voice = [self.userDefaults boolForKey:@"switchVoice"];
+    self.vibra = [self.userDefaults boolForKey:@"switchVibra"];
+    
+    [self.switchAlarm setOn:self.alarm animated:YES];
+    [self.switchMove setOn:self.move animated:YES];
+    [self.switchVoice setOn:self.voice animated:YES];
+    [self.switchVibra setOn:self.vibra animated:YES];
 }
 
 
@@ -148,17 +161,6 @@
     self.deviceButton.layer.borderColor = BLUE_COLOR.CGColor;
     self.sosButton.layer.borderColor = BLUE_COLOR.CGColor;
     self.telButton.layer.borderColor = BLUE_COLOR.CGColor;
-    
-    
-    self.alarm = [self.userDefaults boolForKey:@"alarm"];
-    self.move = [self.userDefaults boolForKey:@"move"];
-    self.voice = [self.userDefaults boolForKey:@"voice"];
-    self.vibra = [self.userDefaults boolForKey:@"vibra"];
-    
-    [self.switchAlarm setOn:self.alarm animated:YES];
-    [self.switchMove setOn:self.move animated:YES];
-    [self.switchVoice setOn:self.voice animated:YES];
-    [self.switchVibra setOn:self.vibra animated:YES];
 
     self.clickImage = [UIImage imageNamed:@"click"];
     self.noclickImage = [UIImage imageNamed:@"noclick"];
@@ -351,14 +353,14 @@
 {
     
     if (self.counterComand == 0) {
-        self.mtbArrayComands = [self configureCommand];
+        self.commands = [self configureCommand];
         
     }
  
     
-    if ([self.mtbArrayComands count] > 0) {
+    if ([self.commands count] > 0) {
         
-        NSString *comand = [self.mtbArrayComands objectAtIndex:0];
+        NSString *comand = [self.commands objectAtIndex:0];
         
         MFMessageComposeViewController *messageComposeViewController = [[TSPostingMessagesManager sharedManager] messageComposeViewController:recipients bodyMessage:comand];
         messageComposeViewController.messageComposeDelegate = self;
@@ -383,17 +385,15 @@
     }
     else if (result == MessageComposeResultSent) {
         NSLog(@"Message sent");
-    
-        if ([self.mtbArrayComands count] > 0) {
-            
-            if ([self.mtbArrayComands count] > 0) {
-                [self.mtbArrayComands removeObjectAtIndex:0];
+        
+            if ([self.commands count] > 0)
+            {
+                [self.commands removeObjectAtIndex:0];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self sendMessage:self.recipient];
 
             });
-        }
     }
     else {
         NSLog(@"Message failed");
